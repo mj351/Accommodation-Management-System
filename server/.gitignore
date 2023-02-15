@@ -1,0 +1,7 @@
+*.log
+*.tmp
+
+# npm/javascript Cancer
+**/node_modules
+package-lock.json
+yarn.lock
