@@ -1,18 +1,19 @@
 const express = require("express")
 const router = express.Router();
 
-const Room = reqire('..models/room')
+const Room = reqire('..models/rooms')
 
-router.get("/rooms", async(req, res) => {
+router.get("/rooms", async (req, res) => {
 
-    try {
-        const rooms = await Room.find({})
-        res.send(rooms)
-        } catch (error) {
-            return res.status(400).json({ messge: error });
-        }
+  try {
+    const rooms = await Room.find({})
+    res.send(rooms)
+  } catch (error) {
+    return res.status(400).json({ messge: error });
+  }
 });
 
+/*
 app.get('/rooms', async (req, res) => {
   const rooms = await Room.find();
   res.send(rooms);
@@ -92,6 +93,6 @@ app.delete('/reservations/:id', async (req, res) => {
   const reservation = await Reservation.findByIdAndRemove(req.params.id);
   if (!reservation) return res.status(404).send('Reservation not found');
   res.send(reservation);
-});
+});*/
 
 module.exports = router;
