@@ -1,10 +1,23 @@
 const express = require('express')
 const app = express()
 const port = 8000 
-const dbconfig = require('./db')
+const mongoose = require("mongoose");
 
+const dbUrl = "mongodb+srv://marwan:xxq6ilScsLlMM8cZ@cluster0.avzd0kp.mongodb.net/accommodation-app?retryWrites=true&w=majority"
 
+const  connectionParams = {
+  uesrNewUrlParser: true,
+  useUnifiedTopology: true
+}
 
+mongoose
+  .connect(dbUrl, connectionParams)
+  .then(() => {
+    console.info("Successfully connected to MongoDB");
+  })
+  .catch((e) => {
+    console.log("Error connecting to MongoDB:", err);
+  });
 
 
 // Serve - https://stackoverflow.com/questions/4840879/nodejs-how-to-get-the-servers-port
