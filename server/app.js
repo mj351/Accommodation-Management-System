@@ -32,6 +32,8 @@ const Database = (module.exports = () => {
   }
 });
 
+TextDecoderStream
+
 Database();
 
 
