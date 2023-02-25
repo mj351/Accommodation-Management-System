@@ -1,41 +1,40 @@
 const express = require('express');
-const app = express();
+const router = express.Router();
+const User = require("../models/user")
 
-app.use(express.json());
+router.post("/register", async (req, res) => {
 
-app.get('/users', async (req, res) => {
-  const users = await User.find();
-  res.send(users);
+  const newuser = new User(req.body)
+
+  try {
+      const user = await newuser.save()
+      res.send("User registed SuccessFully")
+  } catch (error) {
+    return res.status(400).json({ error });
+  }
 });
 
-app.get('/users/:id', async (req, res) => {
-  const user = await User.findById(req.params.id);
-  if (!user) return res.status(404).send('User not found');
-  res.send(user);
+router.post("/login", async(req, res) =>{
+
+  const {email , password} = req.body
+
+  try {
+    const user = User.findOne({email : email , password : password})
+    if(user) {
+      const temp = {
+        name : user.name,
+        email : user.email,
+        admin : user.admin,
+        _id : user._id,
+      }
+      res.send(temp)
+    }
+    else{
+      return res.status(400).json({ message : 'login failed' });
+    }
+  } catch (error) {
+      return res.status(400).json({ error });
+  }
 });
 
-app.post('/users', async (req, res) => {
-  const user = new User({
-    name: req.body.name,
-    role: req.body.role,
-    email: req.body.email
-  });
-  await user.save();
-  res.send(user);
-});
-
-app.put('/users/:id', async (req, res) => {
-  const user = await User.findByIdAndUpdate(req.params.id, {
-    name: req.body.name,
-    role: req.body.role,
-    email: req.body.email
-  }, { new: true });
-  if (!user) return res.status(404).send('User not found');
-  res.send(user);
-});
-
-app.delete('/users/:id', async (req, res) => {
-  const user = await User.findByIdAndRemove(req.params.id);
-  if (!user) return res.status(404).send('User not found');
-  res.send(user);
-});
+module.exports = router;

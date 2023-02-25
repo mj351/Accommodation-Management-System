@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
-const { Schema } = mongoose;
 
-const studentSchema = new Schema({
+const userSchema = mongoose.Schema({
     name: {
         type: "string",
         required: true
@@ -19,7 +18,11 @@ const studentSchema = new Schema({
     admin: {
         type: "Boolean",
         required: true
-    },
+    }
+},{
+    timestamps : true,
 });
 
-module.exports = mongoose.model("students", studentSchema);
+const userModel = mongoose.model('users', userSchema)
+
+module.exports = userModel

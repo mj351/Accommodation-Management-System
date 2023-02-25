@@ -26,7 +26,7 @@ const roomSchema = mongoose.Schema({
         type: Boolean,
         require: true
     },
-    rentperweek: {
+    bookperweek: {
         type: Number,
         require: true
     },
