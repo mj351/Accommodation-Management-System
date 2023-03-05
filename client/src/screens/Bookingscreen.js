@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from "axios";
+import Loader from '../components/Loader';
 
 function Bookingscreen({ match }) {
     const [loading, setloading] = useState(true);
@@ -9,7 +10,7 @@ function Bookingscreen({ match }) {
     useEffect(async () => {
         try {
             setloading(true);
-            const data = (await axios.get('/api/rooms/getallroombyid', { roomid: match.params.roomid })).data;
+            const data = (await axios.get('/api/rooms/getroombyid', { roomid: match.params.roomid})).data;
 
             setroom(data);
             setloading(false);
@@ -23,7 +24,7 @@ function Bookingscreen({ match }) {
     return (
         <div className='m-5'>
             {loading ? (
-                <h1> Loading.....</h1>
+                <Loader/>
             ) : error ? (
                 <h1> Error.....</h1>) : (
 
@@ -43,7 +44,7 @@ function Bookingscreen({ match }) {
                             <hr />
 
                             <b>
-                            <p>Name : {student.name} </p>
+                            <p>Name : </p>
                             <p>From Data :</p>
                             <p>To Data :</p>
                             <p>Capacity:{room.capacity}</p>
