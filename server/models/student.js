@@ -11,15 +11,12 @@ const studentSchema = new Schema({
         required: true,
         unique: true
     },
-    password: {
-        type: "string",
-        required: true,
-        minlength: 6
+    age:{
+        type: Number,
+        require: true
     },
-    admin: {
-        type: "Boolean",
-        required: true
-    },
+},{
+    timestamps : true,
 });
 
 module.exports = mongoose.model("students", studentSchema);

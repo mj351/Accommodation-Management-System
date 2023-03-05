@@ -1,7 +1,11 @@
 const mongoose = require("mongoose");
 
 const roomSchema = mongoose.Schema({
-
+    
+    name:  {
+        type: String,
+        require: true
+    },
     roomNumber: {
         type: String,
         require: true
@@ -10,23 +14,15 @@ const roomSchema = mongoose.Schema({
         type: Number,
         require: true
     },
-    bedNumber: {
-        type: String,
+    capacity:  {
+        type: Number,
         require: true
     },
     type: {
         type: String,
         require: true
     },
-    capacity: {
-        type: Number,
-        require: true
-    },
-    occupied: {
-        type: Boolean,
-        require: true
-    },
-    bookperweek: {
+    rentperweek: {
         type: Number,
         require: true
     },
@@ -36,7 +32,7 @@ const roomSchema = mongoose.Schema({
     },
     imageurls: [],
     currentbookings: []
-
+    
 }, {
     timestamps: true,
 })

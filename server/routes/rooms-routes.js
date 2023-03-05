@@ -1,8 +1,8 @@
 const express = require("express")
 const router = express.Router();
-const Room = reqire('..models/rooms')
+const Room = require('../models/room');
 
-router.get("/rooms", async (req, res) => {
+router.get("/getallrooms", async (req, res) => {
 
   try {
     const rooms = await Room.find({})
@@ -12,7 +12,7 @@ router.get("/rooms", async (req, res) => {
   }
 });
 
-router.post("/room/:id", async (req, res) => {
+router.post("/getroombyid", async (req, res) => {
 
   const roomid = req.body.roomid
 
