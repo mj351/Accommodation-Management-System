@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import axios from "axios";
 import Loader from '../components/Loader';
+//import student from '../../../server/models/student';
 
 function Bookingscreen({ match }) {
     const [loading, setloading] = useState(true);
     const [error, seterror] = useState();
     const [room, setroom] = useState([]);
-
+    //const [studen,setstudent]=useState...
+    //const [rooms,setRooms]=.....
+    //when you press the book Button you need => if(student.id = 2---room.student.id_fk=2)then do what you need
+ 
     useEffect(async () => {
         try {
             setloading(true);
