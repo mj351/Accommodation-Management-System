@@ -9,6 +9,8 @@ const StudentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+
+  ///check this if I needed this
   studentId: {
     type: String,
     required: true,

@@ -1,5 +1,6 @@
 *.log
 *.tmp
+*.env
 
 # npm/javascript Cancer
 **/node_modules
