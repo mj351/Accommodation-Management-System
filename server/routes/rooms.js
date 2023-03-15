@@ -1,26 +1,74 @@
-const express = require("express")
+const express = require('express');
+const Room = require('../models/Room');
+
 const router = express.Router();
-const Room = require('../models/room');
 
-router.get("/getallrooms", async (req, res) => {
-
+// Get all rooms
+router.get('/', async (req, res) => {
   try {
-    const rooms = await Room.find({})
-    res.send(rooms)
-  } catch (error) {
-      return res.status(400).json({ messge: error });
+    const rooms = await Room.find().populate('students');
+    res.json(rooms);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
   }
 });
 
-router.post("/getroombyid", async (req, res) => {
-
-  const roomid = req.body.roomid
+// Add a new room
+router.post('/', async (req, res) => {
+  const { roomNumber, capacity } = req.body;
 
   try {
-    const room = await Room.findByIdAndUpdate({_id : roomid})
-    res.send(room)
-  } catch (error) {
-      return res.status(400).json({ messge: error });
+    const newRoom = new Room({
+      roomNumber,
+      capacity,
+    });
+
+    const room = await newRoom.save();
+    res.json(room);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// Update a room
+router.put('/:id', async (req, res) => {
+  const { roomNumber, capacity } = req.body;
+
+  const roomFields = { roomNumber, capacity };
+
+  try {
+    let room = await Room.findById(req.params.id);
+
+    if (!room) {
+      return res.status(404).json({ msg: 'Room not found' });
+    }
+
+    room = await Room.findByIdAndUpdate(req.params.id, { $set: roomFields }, { new: true });
+
+    res.json(room);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// Delete a room
+router.delete('/:id', async (req, res) => {
+  try {
+    let room = await Room.findById(req.params.id);
+
+    if (!room) {
+      return res.status(404).json({ msg: 'Room not found' });
+    }
+
+    await Room.findByIdAndRemove(req.params.id);
+
+    res.json({ msg: 'Room removed' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
   }
 });
 
