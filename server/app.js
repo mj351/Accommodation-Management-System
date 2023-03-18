@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
+//const { createProxyMiddleware } = require('http-proxy-middleware');
 
 // Import the route files
 const userRoutes = require('./routes/users');
@@ -13,6 +14,18 @@ const app = express();
 //Middleware
 app.use(cors());
 app.use(express.json());
+
+// Proxy middleware configuration
+// app.use(
+//   '/api', // This should match the path you want to proxy
+//   createProxyMiddleware({
+//     target: 'http://localhost:3001', // The target server URL
+//     changeOrigin: true,
+//     pathRewrite: {
+//       '^/api': '', // This rewrites the URL path, remove it if not needed
+//     },
+//   })
+// );
 
 app.get('/', (req, res) =>{
   res.status(200).send("Hello World")
