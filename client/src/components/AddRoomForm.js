@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 const AddRoomForm = () => {
   const [roomNumber, setRoomNumber] = useState('');
@@ -9,7 +10,7 @@ const AddRoomForm = () => {
     e.preventDefault();
 
     try {
-      await axios.post('/api/rooms', { roomNumber, capacity });
+      await axios.post(`${API_BASE_URL}/api/rooms`, { roomNumber, capacity });
       alert('Room added successfully');
       setRoomNumber('');
       setCapacity('');

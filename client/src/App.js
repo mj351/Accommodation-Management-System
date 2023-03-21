@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
-import StudentList from './components/StudentList';
 import AddStudentForm from './components/AddStudentForm';
+import AddRoomForm from './components/AddRoomForm';
 
 function App() {
   return (
@@ -10,8 +10,8 @@ function App() {
         <h1>Accommodation Management System</h1>
       </header>
       <main>
-        <StudentList />
         <AddStudentForm />
+        <AddRoomForm />
       </main>
     </div>
   );
