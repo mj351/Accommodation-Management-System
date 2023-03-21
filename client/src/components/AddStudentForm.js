@@ -1,24 +1,21 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 const AddStudentForm = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [age, setAge] = useState('');
-  const [email, setEmail] = useState('');
-  const [room, setRoom] = useState('');
+  const [studentId, setStudentId] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await axios.post('/api/students', { firstName, lastName, age, email, room });
+      await axios.post(`${API_BASE_URL}/api/students`, { firstName, lastName, studentId });
       alert('Student added successfully');
       setFirstName('');
       setLastName('');
-      setAge('');
-      setEmail('');
-      setRoom('');
+      setStudentId('');
     } catch (error) {
       console.error('Error adding student:', error);
       alert('Error adding student');
@@ -40,18 +37,8 @@ const AddStudentForm = () => {
         </label>
         <br />
         <label>
-          Age:
-          <input type="number" value={age} onChange={(e) => setAge(e.target.value)} required />
-        </label>
-        <br />
-        <label>
-          Email:
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        </label>
-        <br />
-        <label>
-          Room ID:
-          <input type="text" value={room} onChange={(e) => setRoom(e.target.value)} required />
+          Student ID:
+          <input type="text" value={studentId} onChange={(e) => setStudentId(e.target.value)} required />
         </label>
         <br />
         <button type="submit">Add Student</button>

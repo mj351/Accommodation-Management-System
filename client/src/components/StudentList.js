@@ -5,6 +5,9 @@ import { API_BASE_URL } from '../config';
 const StudentList = () => {
   const [students, setStudents] = useState([]);
   console.log("hey")
+  useEffect(() => {
+    fetchStudents();
+  }, []);
 
   const fetchStudents = async () => {
     try {
@@ -19,17 +22,29 @@ const StudentList = () => {
 
   useEffect(() => {
     fetchStudents();
-    console.log("students:" ,students);
-    console.log("ur",API_BASE_URL,'/students');
+    console.log("students:", students);
+    console.log("ur", API_BASE_URL, '/students');
   }, []);
 
   return (
     <div>
       <h2>Student List</h2>
-      <ul>
-       
-       
-      </ul>
+      <table>
+        <thead>
+          <tr>
+            <th>firstName</th>
+            <th>lastName</th>
+          </tr>
+        </thead>
+        <tbody>
+          {students.map((student) => (
+            <tr key={student._id}>
+              <td>{student.firstName}</td>
+              <td>{student.lastName}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

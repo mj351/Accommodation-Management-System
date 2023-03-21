@@ -40,7 +40,7 @@ router.put('/:id', async (req, res) => {
     const studentFields = { firstName, lastName, studentId };
 
     try {
-        let student = await Student.findById(req.params.id);
+        let student = await Student.findById(req.params.id);1
 
         if (!student) {
             return res.status(404).json({ msg: 'Student not found' });
