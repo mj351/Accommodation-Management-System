@@ -4,26 +4,20 @@ import { API_BASE_URL } from '../config';
 
 const StudentList = () => {
   const [students, setStudents] = useState([]);
-  console.log("hey")
-  useEffect(() => {
-    fetchStudents();
-  }, []);
-
-  const fetchStudents = async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/api/students`);
-      setStudents(response.data);
-      console.log(response);
-      console.log(response.data);
-    } catch (error) {
-      console.error('Error fetching students:', error);
-    }
-  };
 
   useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/api/students`);
+        setStudents(response.data);
+        console.log(response);
+        console.log(response.data);
+      } catch (error) {
+        console.error('Error fetching students:', error);
+      }
+    };
+
     fetchStudents();
-    console.log("students:", students);
-    console.log("ur", API_BASE_URL, '/students');
   }, []);
 
   return (
@@ -32,8 +26,9 @@ const StudentList = () => {
       <table>
         <thead>
           <tr>
-            <th>firstName</th>
-            <th>lastName</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Student ID</th>
           </tr>
         </thead>
         <tbody>
@@ -41,6 +36,7 @@ const StudentList = () => {
             <tr key={student._id}>
               <td>{student.firstName}</td>
               <td>{student.lastName}</td>
+              <td>{student.studentId}</td>
             </tr>
           ))}
         </tbody>

@@ -6,7 +6,7 @@ const router = express.Router();
 // Get all rooms
 router.get('/', async (req, res) => {
   try {
-    const rooms = await Room.find().populate('students');
+    const rooms = await Room.find();
     res.json(rooms);
   } catch (err) {
     console.error(err.message);
@@ -16,12 +16,15 @@ router.get('/', async (req, res) => {
 
 // Add a new room
 router.post('/', async (req, res) => {
-  const { roomNumber, capacity } = req.body;
+  const { roomNumber, capacity, type, description, currentbookings } = req.body;
 
   try {
     const newRoom = new Room({
       roomNumber,
       capacity,
+      type,
+      description,
+      currentbookings,
     });
 
     const room = await newRoom.save();
@@ -34,9 +37,9 @@ router.post('/', async (req, res) => {
 
 // Update a room
 router.put('/:id', async (req, res) => {
-  const { roomNumber, capacity } = req.body;
+  const { roomNumber, capacity, type, description, currentbookings } = req.body;
 
-  const roomFields = { roomNumber, capacity };
+  const roomFields = { roomNumber, capacity, type, description, currentbookings };
 
   try {
     let room = await Room.findById(req.params.id);

@@ -10,12 +10,15 @@ const RoomSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  students: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Student',
-    },
-  ],
+  type :{
+    type: String,
+    require: true,
+  },
+  descripation :{
+    type: String,
+    require: true,
+  },
+  currentbookings: [],
 });
 
 module.exports = mongoose.model('Room', RoomSchema);

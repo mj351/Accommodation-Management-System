@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 const LoginForm = () => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('/api/users/login', { email, password });
+      const response = await axios.post(`${API_BASE_URL}/api/users/login`, { username, password });
       // Handle successful login, e.g., save token and redirect user
       console.log('User logged in:', response.data);
     } catch (error) {
@@ -23,8 +24,8 @@ const LoginForm = () => {
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <label>
-          Email:
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        Username:
+          <input type="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
         </label>
         <br />
         <label>

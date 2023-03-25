@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 import BookingForm from '../components/BookingForm';
 
 const BookingManagementPage = () => {
@@ -13,7 +14,7 @@ const BookingManagementPage = () => {
 
   const fetchStudents = async () => {
     try {
-      const response = await axios.get('/api/students');
+      const response = await axios.get(`${API_BASE_URL}/api/students`);
       setStudents(response.data);
     } catch (error) {
       console.error('Error fetching students:', error);
@@ -22,7 +23,7 @@ const BookingManagementPage = () => {
 
   const fetchRooms = async () => {
     try {
-      const response = await axios.get('/api/rooms');
+      const response = await axios.get(`${API_BASE_URL}/api/rooms`);
       setRooms(response.data);
     } catch (error) {
       console.error('Error fetching rooms:', error);
@@ -31,7 +32,7 @@ const BookingManagementPage = () => {
 
   const handleFormSubmit = async (bookingData) => {
     try {
-      await axios.post('/api/bookings', bookingData);
+      await axios.post(`${API_BASE_URL}/api/bookings`, bookingData);
       alert('Booking created successfully!');
     } catch (error) {
       console.error('Error creating booking:', error);

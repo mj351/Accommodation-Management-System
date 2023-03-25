@@ -5,15 +5,21 @@ import { API_BASE_URL } from '../config';
 const AddRoomForm = () => {
   const [roomNumber, setRoomNumber] = useState('');
   const [capacity, setCapacity] = useState('');
+  const [type, setType] = useState('');
+  const [description, setDescription] = useState('');
+  const [currentbookings, setCurrentBookings] = useState([]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await axios.post(`${API_BASE_URL}/api/rooms`, { roomNumber, capacity });
+      await axios.post(`${API_BASE_URL}/api/rooms`, { roomNumber, capacity, type, description, currentbookings });
       alert('Room added successfully');
       setRoomNumber('');
       setCapacity('');
+      setType('');
+      setDescription('');
+      setCurrentBookings([]);
     } catch (error) {
       console.error('Error adding room:', error);
       alert('Error adding room');
@@ -32,6 +38,16 @@ const AddRoomForm = () => {
         <label>
           Capacity:
           <input type="number" value={capacity} onChange={(e) => setCapacity(e.target.value)} required />
+        </label>
+        <br />
+        <label>
+          Type:
+          <input type="text" value={type} onChange={(e) => setType(e.target.value)} required />
+        </label>
+        <br />
+        <label>
+          Description:
+          <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} required />
         </label>
         <br />
         <button type="submit">Add Room</button>
