@@ -1,15 +1,12 @@
 import React from 'react';
 import './App.css';
-import AddRoomForm from './components/AddRoomForm';
-import RoomList from './components/RoomList';
-
+import AddStudentForm from './components/AddStudentForm';
 
 function App() {
   return (
     <div className="App">
       <main>
-        <AddRoomForm />
-        <RoomList />
+        <AddStudentForm />
       </main>
     </div>
   );
