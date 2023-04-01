@@ -28,7 +28,7 @@ router.post('/', async (req, res) => {
     });
 
     const room = await newRoom.save();
-    res.json(room);
+    res.status(201).json(room);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

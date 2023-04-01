@@ -16,19 +16,21 @@ describe('Rooms API', () => {
 
   test('POST /api/rooms - create a new room', async () => {
     const newRoom = {
-      roomNumber: '14',
+      roomNumber: '24',
       capacity: 2,
       type: 'Double',
-      description: '',
+      description: 'double bed room close to LUK Canterbury',
     };
 
     const response = await request(app)
       .post('/api/rooms')
       .send(newRoom);
 
+      console.log(response.body); 
+
     roomId = response.body._id;
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(201);
     expect(response.body.roomNumber).toBe(newRoom.roomNumber);
     expect(response.body.capacity).toBe(newRoom.capacity);
     expect(response.body.type).toBe(newRoom.type);
@@ -52,7 +54,7 @@ describe('Rooms API', () => {
 
   test('PUT /api/rooms/:id - update a room by id', async () => {
     const updatedRoom = {
-      roomNumber: '14',
+      roomNumber: '24',
       capacity: 2,
       type: 'Double',
       description: '',
