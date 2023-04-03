@@ -1,16 +1,18 @@
-import React from 'react';
+import logo from './logo.svg'; 
 import './App.css';
-import Navbar from './components/Navbar'
-import RoomManagementPage from './pages/RoomManagementPage';
-
+import Navbar from './components/Navbar';
+import { BrowserRouter , Route , Link } from 'react-router-dom';
+import HomePage from './pages/HomePage';
 
 function App() {
   return (
     <div className="App">
-      <main>
         <Navbar />
-        <RoomManagementPage />
-      </main>
+        <BrowserRouter>
+
+        <Route path="/home" exact Component={HomePage} />
+
+        </BrowserRouter>
     </div>
   );
 }
