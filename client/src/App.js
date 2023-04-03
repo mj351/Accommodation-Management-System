@@ -1,15 +1,15 @@
 import React from 'react';
 import './App.css';
-import AddStudentForm from './components/AddStudentForm';
-import StudentList from './components/StudentList';
+import Navbar from './components/Navbar'
+import RoomManagementPage from './pages/RoomManagementPage';
 
 
 function App() {
   return (
     <div className="App">
       <main>
-        <AddStudentForm />
-        <StudentList />
+        <Navbar />
+        <RoomManagementPage />
       </main>
     </div>
   );

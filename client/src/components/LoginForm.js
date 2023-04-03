@@ -11,7 +11,7 @@ const LoginForm = () => {
 
     try {
       const response = await axios.post(`${API_BASE_URL}/api/users/login`, { username, password });
-      // Handle successful login, e.g., save token and redirect user
+      // Handle successful login
       console.log('User logged in:', response.data);
     } catch (error) {
       console.error('Error logging in user:', error);

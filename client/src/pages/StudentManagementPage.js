@@ -4,7 +4,7 @@ import StudentForm from '../components/StudentForm';
 import StudentSearch from '../components/StudentSearch';
 
 const StudentManagementPage = () => {
-  // State and API call logic goes here
+  //State and API call logic goes here 
 
   return (
     <div>

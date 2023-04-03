@@ -2,6 +2,10 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 
+const isAuthenticated = () => {
+  // Check for the presence of a valid authentication token, e.g., JWT
+  return false; // Return true if the user is authenticated, otherwise return false
+};
 
 
 const Navigation = () => {

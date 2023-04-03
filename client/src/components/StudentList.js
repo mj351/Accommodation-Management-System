@@ -8,7 +8,7 @@ const StudentList = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await axios.get(`https://3001-mj351-accommodationman-9o9w8id2ntz.ws-eu93.gitpod.io/api/students`);
+        const response = await axios.get(`${API_BASE_URL}/api/students`);
         setStudents(response.data);
         console.log(response);
         console.log(response.data);

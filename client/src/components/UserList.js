@@ -10,6 +10,8 @@ const UserList = () => {
       try {
         const response = await axios.get(`${API_BASE_URL}/api/users`);
         setUsers(response.data);
+        console.log(response);
+        console.log(response.data);
       } catch (error) {
         console.error('Error fetching users:', error);
       }
@@ -21,11 +23,22 @@ const UserList = () => {
   return (
     <div>
       <h2>User List</h2>
-      <ul>
-        {users.map((user) => (
-          <li key={user._id}>{user.email}</li>
-        ))}
-      </ul>
+      <table>
+        <thead>
+          <tr>
+            <th>UserName</th>
+            <th>Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((user) => (
+            <tr key={user._id}>
+              <td>{user.username}</td>
+              <td>{user.role}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
