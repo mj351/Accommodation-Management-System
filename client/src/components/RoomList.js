@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_BASE_URL } from '../config';
-
-
+import RoomRow from './RoomRow';
 
 const RoomList = () => {
   const [rooms, setRooms] = useState([]);
@@ -20,14 +19,32 @@ const RoomList = () => {
     fetchRooms();
   }, []);
 
+  const handleUpdate = async (updatedRoom) => {
+    try {
+      await axios.put(`${API_BASE_URL}/api/rooms/${updatedRoom._id}`, updatedRoom);
+      setRooms(rooms.map((room) => (room._id === updatedRoom._id ? updatedRoom : room)));
+    } catch (error) {
+      console.error('Error updating room:', error);
+      alert('Error updating room');
+    }
+  };
+
+  const handleDelete = async (roomId) => {
+    try {
+      await axios.delete(`${API_BASE_URL}/api/rooms/${roomId}`);
+      setRooms(rooms.filter((room) => room._id !== roomId));
+    } catch (error) {
+      console.error('Error deleting room:', error);
+      alert('Error deleting room');
+    }
+  };
+
   return (
     <div>
       <h2>Room List</h2>
       <ul>
         {rooms.map((room) => (
-          <li key={room._id}>
-            Room Number: {room.roomNumber} - Capacity: {room.capacity} - Type: {room.type} - Description: {room.description} - Current Bookings: {room.currentbookings.length}
-          </li>
+          <RoomRow key={room._id} room={room} onUpdate={handleUpdate} onDelete={handleDelete} />
         ))}
       </ul>
     </div>

@@ -1,6 +1,9 @@
 import React from 'react';
 import RoomList from '../components/RoomList';
 import AddRoomForm from '../components/AddRoomForm';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const RoomManagementPage = () => {
   //..
@@ -9,6 +12,7 @@ const RoomManagementPage = () => {
       <h1>Room Management</h1>
       <RoomList />
       <AddRoomForm />
+      <ToastContainer />
     </div>
   );
 };
