@@ -9,6 +9,8 @@ npm install --save-dev jest supertest
 
 npm install mongoose-test-utils // to clear database 
 
+npm install axios react-toastify
+
 ## Back End (Server)
 
 Navigate to the server folder and Run the following comman.

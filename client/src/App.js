@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import Navbar from './components/Navbar';
 import { BrowserRouter , Route , Link } from 'react-router-dom';
-import RoomManagementPage from './pages/RoomManagementPage';
+import StudentManagementPage from './pages/StudentManagementPage'
 
 
 function App() {
@@ -10,7 +10,7 @@ function App() {
     <div className="App">
         <Navbar />
         <main>
-        <RoomManagementPage/>
+        <StudentManagementPage />
       </main>
     </div>
   );
