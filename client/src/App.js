@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import Navbar from './components/Navbar';
 import { BrowserRouter , Route , Link } from 'react-router-dom';
-import BookingManagementPage from './pages/BookingManagementPage'
+import UserManagementPage from './pages/UserManagementPage'
 
 
 function App() {
@@ -10,7 +10,7 @@ function App() {
     <div className="App">
         <Navbar />
         <main>
-        <BookingManagementPage />
+        <UserManagementPage />
       </main>
     </div>
   );
