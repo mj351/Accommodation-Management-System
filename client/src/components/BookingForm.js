@@ -12,6 +12,8 @@ const BookingForm = ({ onSubmit, students, rooms }) => {
     onSubmit({ studentId, roomId, moveInDate });
   };
 
+  
+
   return (
     <form onSubmit={handleSubmit}>
       <div>
