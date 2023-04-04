@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_BASE_URL } from '../config';
 import RoomRow from './RoomRow';
+import { toast } from 'react-toastify';
 
 const RoomList = () => {
   const [rooms, setRooms] = useState([]);
@@ -23,9 +24,9 @@ const RoomList = () => {
     try {
       await axios.put(`${API_BASE_URL}/api/rooms/${updatedRoom._id}`, updatedRoom);
       setRooms(rooms.map((room) => (room._id === updatedRoom._id ? updatedRoom : room)));
+      toast.success('Room updated successfully');
     } catch (error) {
-      console.error('Error updating room:', error);
-      alert('Error updating room');
+      toast.error('Failed to update room');
     }
   };
 
@@ -33,9 +34,9 @@ const RoomList = () => {
     try {
       await axios.delete(`${API_BASE_URL}/api/rooms/${roomId}`);
       setRooms(rooms.filter((room) => room._id !== roomId));
+      toast.success('Room deleted successfully');
     } catch (error) {
-      console.error('Error deleting room:', error);
-      alert('Error deleting room');
+      toast.error('Failed to delete room');
     }
   };
 
@@ -44,7 +45,12 @@ const RoomList = () => {
       <h2>Room List</h2>
       <ul>
         {rooms.map((room) => (
-          <RoomRow key={room._id} room={room} onUpdate={handleUpdate} onDelete={handleDelete} />
+          <RoomRow
+           key={room._id} 
+           room={room} 
+           onUpdate={handleUpdate} 
+           onDelete={handleDelete} 
+           />
         ))}
       </ul>
     </div>

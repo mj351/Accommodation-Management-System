@@ -8,7 +8,7 @@ const AddRoomForm = () => {
   const [type, setType] = useState('');
   const [description, setDescription] = useState('');
   const [currentbookings, setCurrentBookings] = useState([]);
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 

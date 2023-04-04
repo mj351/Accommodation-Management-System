@@ -35,6 +35,19 @@ const RoomRow = ({ room, onUpdate, onDelete }) => {
         value={updatedRoomData.capacity}
         onChange={handleChange}
       />
+      <input
+        type="text"
+        name="type"
+        value={updatedRoomData.type}
+        onChange={handleChange}
+      />
+      <input
+        type="text"
+        name="description"
+        value={updatedRoomData.description}
+        onChange={handleChange}
+      />
+      
       <button onClick={handleSave}>Save</button>
       <button onClick={handleCancel}>Cancel</button>
       <button onClick={() => onDelete(room._id)}>Delete</button>
