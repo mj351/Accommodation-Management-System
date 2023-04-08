@@ -3,6 +3,8 @@ import './App.css';
 import Navbar from './components/Navbar';
 //import { BrowserRouter , Route , Link } from 'react-router-dom';
 import BookingManagementPage from './pages/BookingManagementPage';
+import RoomManagementPage from './pages/RoomManagementPage';
+
 
 function App() {
   return (
@@ -10,6 +12,7 @@ function App() {
         <Navbar />
         <main>
         <BookingManagementPage />
+        <RoomManagementPage />
 
       </main>
     </div>
