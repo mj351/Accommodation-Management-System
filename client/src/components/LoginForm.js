@@ -1,28 +1,27 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { API_BASE_URL } from '../config';
-//import { useCookies} from "react";
 import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 const LoginForm = () => {
-  //const[_, setCookies] = useCookies(["access_token"]);
-
+  const [_, setCookies] = useCookies (["authToken"])
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
     try {
-      const result = await axios.post(`${API_BASE_URL}/api/users/login`, {
+      const response = await axios.post(`${API_BASE_URL}/api/users/login`, {
         username, 
         password,
       });
 
-      //setCookies("access_token", result.data.token);
-      window.localStorage.setItem("userID", result.data.userID);
+      setCookies("authToken", response.data.token);
+      window.localStorage.setItem("userID", response.data.userID);
       navigate("/");
     } catch (error) {
       console.error('Error logging in user:', error);
@@ -30,7 +29,7 @@ const LoginForm = () => {
   };
 
   return (
-    <div className='uesr-container'>
+    <div className="user-container">
       <form onSubmit={handleSubmit}>
       <h2>Login</h2>
       <div className="form-group">
@@ -39,7 +38,7 @@ const LoginForm = () => {
             type="text"
             id="username"
             value={username}
-            onChange={(event) => setUsername(event.target.value)}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </div>
         <div className="form-group">
@@ -48,7 +47,7 @@ const LoginForm = () => {
             type="password"
             id="password"
             value={password}
-            onChange={(event) => setPassword(event.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
         <button type="submit">Login</button>

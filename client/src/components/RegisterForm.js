@@ -11,7 +11,12 @@ const RegisterForm = () => {
     e.preventDefault();
 
     try {
-      await axios.post(`${API_BASE_URL}/api/users/register`, { username, password, role }); // Include role in the request
+      await axios.post(`${API_BASE_URL}/api/users/register`, { 
+        username, 
+        password, 
+        role 
+      });
+
       alert('User registered successfully');
       setUsername(''); // Clear username field
       setPassword(''); // Clear password field
@@ -23,7 +28,7 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className='user-container'>
+    <div className= "user-container">
       <form onSubmit={handleSubmit}>
       <h2>Register</h2>
       <div className="form-group">
