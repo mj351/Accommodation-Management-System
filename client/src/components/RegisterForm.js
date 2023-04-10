@@ -23,24 +23,36 @@ const RegisterForm = () => {
   };
 
   return (
-    <div>
-      <h2>Register</h2>
+    <div className='user-container'>
       <form onSubmit={handleSubmit}>
-        <label>
-          Username:
-          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
-        </label>
-        <br />
-        <label>
-          Password:
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        </label>
-        <br />
-        <label>
-          Role:
-          <input type="text" value={role} onChange={(e) => setRole(e.target.value)} required />
-        </label>
-        <br />
+      <h2>Register</h2>
+      <div className="form-group">
+          <label htmlFor="username">Username:</label>
+          <input
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">Password:</label>
+          <input
+           type="password"
+           id="password"
+          value={password} 
+          onChange={(e) => setPassword(e.target.value)} required
+           />
+        </div>
+        <div className="form-group">
+          <label htmlFor="role">Role:</label>
+          <input
+            type="text"
+            id="role"
+            value={role}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
         <button type="submit">Register</button>
       </form>
     </div>

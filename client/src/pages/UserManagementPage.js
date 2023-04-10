@@ -8,7 +8,6 @@ import LoginForm from '../components/LoginForm';
   return (
     <div className="user-management">
       <h1>User Management</h1>
-      <UserList />
       <RegisterForm />
       <LoginForm />
     </div>

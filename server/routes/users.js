@@ -59,12 +59,12 @@ router.post(
 
 router.post('/login', async(req, res) => {
   const {username, password} = req.body;
+
   const user = await User.findOne({ username });
 
   if (!user) {
-    return  res.status(400).json({ message : "Login Failed" });
+    return  res.status(400).json({ message : "Login Faild" });
   }
-
   const isPasswordVaild = await bcrypt.compare(password, user.password);
 
   if (!isPasswordVaild) {
@@ -74,10 +74,7 @@ router.post('/login', async(req, res) => {
   const token = jwt.sign({id: user._id}, process.env.JWT_SECRET); // Use JWT_SECRET from environment variables
   res.json({token, userID: user._id});
 });
-
-
-
-
+  
 // Get all users
 router.get('/', async (req, res) => {
   try {
