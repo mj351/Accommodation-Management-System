@@ -3,7 +3,7 @@ import axios from 'axios';
 import { API_BASE_URL } from '../config';
 import BookingForm from '../components/BookingForm';
 
-const BookingManagementPage = () => {
+export const BookingManagementPage = () => {
   const [students, setStudents] = useState([]);
   const [rooms, setRooms] = useState([]);
 
@@ -41,11 +41,9 @@ const BookingManagementPage = () => {
   };
 
   return (
-    <div>
+    <div className="booking-management">
       <h1>Booking Management</h1>
       <BookingForm onSubmit={handleFormSubmit} students={students} rooms={rooms} />
     </div>
   );
 };
-
-export default BookingManagementPage;

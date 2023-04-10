@@ -6,10 +6,10 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-const RoomManagementPage = () => {
+export const RoomManagementPage = () => {
 
   return (
-    <div>
+    <div className="room-management">
       <h1>Room Management</h1>
       <RoomList />
       <AddRoomForm />
@@ -18,5 +18,3 @@ const RoomManagementPage = () => {
     </div>
   );
 };
-
-export default RoomManagementPage;

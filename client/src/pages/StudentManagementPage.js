@@ -5,11 +5,10 @@ import StudentSearch from '../components/StudentSearch';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const StudentManagementPage = () => {
-  //State and API call logic goes here 
+export const StudentManagementPage = () => {
 
   return (
-    <div>
+    <div className="student-management">
       <h1>Student Management</h1>
       <StudentList />
       <AddStudentForm />
@@ -18,5 +17,3 @@ const StudentManagementPage = () => {
     </div>
   );
 };
-
-export default StudentManagementPage;
