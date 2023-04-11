@@ -24,13 +24,24 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     const { userId, studentId, roomId, startDate, endDate } = req.body;
 
+    console.log('Request body:', req.body);
+
     try {
+        console.log('User ID:', userId);
         const user = await User.findById(userId);
+        console.log('User object:', user);
+
         const student = await Student.findById(studentId);
         const room = await Room.findById(roomId);
 
-        if (!user || !student || !room) {
-            return res.status(400).json({ msg: 'Invalid user, student, or room' });
+        if (!user) {
+            return res.status(400).json({ msg: 'Invalid user ID' });
+        }
+        if (!student) {
+            return res.status(400).json({ msg: 'Invalid student ID' });
+        }
+        if (!room) {
+            return res.status(400).json({ msg: 'Invalid room ID' });
         }
 
         const newBooking = new Booking({
