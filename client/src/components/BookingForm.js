@@ -1,19 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_BASE_URL } from '../config';
 
-const BookingForm = ({ onSubmit, students, rooms }) => {
+const BookingForm = ({ userId, students, rooms, onSelect }) => {
   const [studentId, setStudentId] = useState('');
   const [roomId, setRoomId] = useState('');
-  const [moveInDate, setMoveInDate] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    onSubmit({ studentId, roomId, moveInDate });
+
+    try {
+      const response = await axios.post(`${API_BASE_URL}/booking`, {
+        userId,
+        studentId,
+        roomId,
+        startDate,
+        endDate,
+      });
+
+      console.log('Booking created:', response.data);
+    } catch (error) {
+      console.error('Error creating booking:', error);
+    }
   };
+
+  const handleSelect = () => {
+    if (onSelect) {
+      onSelect({ studentId, roomId });
+    }
+  };
+
+  useEffect(() => {
+    handleSelect();
+  }, [studentId, roomId]);
+
 
   return (
     <form onSubmit={handleSubmit}>
+      {/* Existing form fields */}
       <div>
         <label htmlFor="studentId">Student</label>
         <select
@@ -45,12 +71,21 @@ const BookingForm = ({ onSubmit, students, rooms }) => {
         </select>
       </div>
       <div>
-        <label htmlFor="moveInDate">Move-in Date</label>
+        <label htmlFor="startDate">Start Date</label>
         <input
           type="date"
-          id="moveInDate"
-          value={moveInDate}
-          onChange={(event) => setMoveInDate(event.target.value)}
+          id="startDate"
+          value={startDate}
+          onChange={(event) => setStartDate(event.target.value)}
+        />
+      </div>
+      <div>
+        <label htmlFor="endDate">End Date</label>
+        <input
+          type="date"
+          id="endDate"
+          value={endDate}
+          onChange={(event) => setEndDate(event.target.value)}
         />
       </div>
       <button type="submit">Book Room</button>
