@@ -74,5 +74,20 @@ router.delete('/:id', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+/*/ Get a room by id
+router.get('/:id', async (req, res) => {
+  try {
+    const room = await Room.findById(req.params.id);
+
+    if (!room) {
+      return res.status(404).json({ msg: 'Room not found' });
+    }
+
+    res.json(room);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});*/
 
 module.exports = router;
