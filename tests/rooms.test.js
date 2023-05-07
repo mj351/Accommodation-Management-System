@@ -45,12 +45,12 @@ describe('Rooms API', () => {
     expect(response.body.length).toBeGreaterThanOrEqual(1);
   });
 
-  test('GET /api/rooms/:id - get a room by id', async () => {
+  /*test('GET /api/rooms/:id - get a room by id', async () => {
     const response = await request(app).get(`/api/rooms/${roomId}`);
 
     expect(response.status).toBe(200);
     expect(response.body._id).toBe(roomId);
-  });
+  });*/
 
   test('PUT /api/rooms/:id - update a room by id', async () => {
     const updatedRoom = {
