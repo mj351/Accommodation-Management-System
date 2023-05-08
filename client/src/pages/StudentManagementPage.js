@@ -1,19 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import StudentList from '../components/StudentList';
-import AddStudentForm from '../components/AddStudentForm';
-import StudentSearch from '../components/StudentSearch';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState, useEffect } from "react";
+import StudentList from "../components/StudentList";
+import AddStudentForm from "../components/AddStudentForm";
+import StudentSearch from "../components/StudentSearch";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Card, Col, Container, Row } from "react-bootstrap";
 
 export const StudentManagementPage = () => {
-
   return (
-    <div className="student-management">
-      <h1>Student Management</h1>
-      <StudentList />
+    <Container>
+      <h1 className="text-center m-2 my-5">Student Management</h1>
+
       <AddStudentForm />
-      <StudentSearch />
-      <ToastContainer />
-    </div>
+    </Container>
   );
 };
