@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-
-const RoomRow = ({ room, onUpdate, onDelete }) => {
+import React, { useState } from "react";
+import { MdOutlineModeEditOutline } from "react-icons/md";
+import { RiDeleteBin2Line } from "react-icons/ri";
+const RoomRow = ({ room, onUpdate, onDelete, i }) => {
   const [editMode, setEditMode] = useState(false);
   const [updatedRoomData, setUpdatedRoomData] = useState(room);
 
@@ -47,17 +48,30 @@ const RoomRow = ({ room, onUpdate, onDelete }) => {
         value={updatedRoomData.description}
         onChange={handleChange}
       />
-      
+
       <button onClick={handleSave}>Save</button>
       <button onClick={handleCancel}>Cancel</button>
       <button onClick={() => onDelete(room._id)}>Delete</button>
     </li>
   ) : (
-    <li key={room._id}>
-      Room Number: {room.roomNumber} - Capacity: {room.capacity} - Type: {room.type} - Description: {room.description} - Current Bookings: {room.currentbookings.length}
-      <button onClick={handleEdit}>Edit</button>
-      <button onClick={() => onDelete(room._id)}>Delete</button>
-    </li>
+    <tbody>
+      <tr>
+        <td>{i + 1}</td>
+        <td>{room.roomNumber}</td>
+        <td>{room.capacity}</td>
+        <td>{room.type}</td>
+        <td>
+          <MdOutlineModeEditOutline
+            style={{ marginRight: "5px" }}
+            onClick={handleEdit}
+          />
+          <RiDeleteBin2Line
+            style={{ marginLeft: "5px" }}
+            onClick={() => onDelete(room._id)}
+          />
+        </td>
+      </tr>
+    </tbody>
   );
 };
 
