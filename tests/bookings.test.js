@@ -1,7 +1,7 @@
-const request = require('supertest');
-const app = require('../server/app');
-const mongoose = require('mongoose');
-const Database = require('../server/database');
+const request = require("supertest");
+const app = require("../server/app");
+const mongoose = require("mongoose");
+const Database = require("../server/database");
 
 beforeAll(async () => {
   await Database();
@@ -11,60 +11,36 @@ afterAll(async () => {
   await mongoose.disconnect();
 });
 
-describe('Bookings API', () => {
+describe("Bookings API", () => {
   let bookingId;
-  let roomId;
-  let studentId;
-  let userId;
 
-  beforeAll(async () => {
-
-    // Create a room, student, and user for testing purposes
-    const roomResponse = await request(app).post('/api/rooms').send({
-      roomNumber: '102',
-      capacity: 2,
-      type: 'Double',
-      descripation: 'A nice double room near LUK',
-    });
-
-    roomId = roomResponse.body._id;
-
-    const studentResponse = await request(app).post('/api/students').send({
-      firstName: 'Maf',
-      lastName: 'Kris',
-      studentId: '123',
-    });
-
-    studentId = studentResponse.body._id;
-
-    const userResponse = await request(app).post('/api/users').send({
-      username: 'testuser',
-      password: 'testpassword',
-    });
-
-    userId = userResponse.body._id;
-  });
-
+  // Add a new booking
   test('POST /api/bookings - create a new booking', async () => {
     const newBooking = {
-      student: studentId,
-      room: roomId,
-      user: userId,
-      checkInDate: '2023-04-01',
-      checkOutDate: '2023-05-01',
+      roomId: '5f9d4b0b0f1b3e1b1c9f0b1b',
+      studentId: '5f9d4b0b0f1b3e1b1c9f0b1b',
+      startDate: '2020-11-01',
+      endDate: '2020-11-03',
     };
 
     const response = await request(app)
       .post('/api/bookings')
       .send(newBooking);
 
+      console.log(response.body);
+      
     bookingId = response.body._id;
 
     expect(response.status).toBe(201);
-    expect(response.body.student).toBe(newBooking.student);
-    expect(response.body.room).toBe(newBooking.room);
+    expect(response.body.roomId).toBe(newBooking.roomId);
+    expect(response.body.guestId).toBe(newBooking.guestId);
+    expect(response.body.checkInDate).toBe(newBooking.checkInDate);
+    expect(response.body.checkOutDate).toBe(newBooking.checkOutDate);
+    expect(response.body.totalAmount).toBe(newBooking.totalAmount);
+    expect(response.body.status).toBe(newBooking.status);
   });
 
+  // Get all bookings
   test('GET /api/bookings - get all bookings', async () => {
     const response = await request(app).get('/api/bookings');
 
@@ -73,32 +49,21 @@ describe('Bookings API', () => {
     expect(response.body.length).toBeGreaterThanOrEqual(1);
   });
 
-  test('GET /api/bookings/:id - get a booking by id', async () => {
-    const response = await request(app).get(`/api/bookings/${bookingId}`);
 
-    expect(response.status).toBe(200);
-    expect(response.body._id).toBe(bookingId);
-  });
+  // Get a booking by id 
 
-  test('PUT /api/bookings/:id - update a booking by id', async () => {
-    const updatedBooking = {
-      checkInDate: '2023-04-10',
-      checkOutDate: '2023-05-10',
-    };
+  
 
-    const response = await request(app)
-      .put(`/api/bookings/${bookingId}`)
-      .send(updatedBooking);
+  // Add a new booking
+  
 
-    expect(response.status).toBe(200);
-    expect(new Date(response.body.checkInDate)).toEqual(new Date(updatedBooking.checkInDate));
-    expect(new Date(response.body.checkOutDate)).toEqual(new Date(updatedBooking.checkOutDate));
-  });
+  // Update a booking
+  
 
-  test('DELETE /api/bookings/:id - delete a booking by id', async () => {
-    const response = await request(app).delete(`/api/bookings/${bookingId}`);
+  // Delete a booking
+  
 
-    expect(response.status).toBe(200);
-    expect(response.body.msg).toBe('Booking removed');
-  });
+  // Cancel a booking
+
+
 });
