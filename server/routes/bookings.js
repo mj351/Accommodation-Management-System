@@ -25,7 +25,6 @@ router.get("/", async (req, res) => {
 // Add a new booking
 router.post("/", async (req, res) => {
   const {
-    // userId,
     studentId,
     roomId,
     startDate,
@@ -35,16 +34,11 @@ router.post("/", async (req, res) => {
   //   console.log("Request body:", req.body);
 
   try {
-    // console.log("User ID:", userId);
-    // const user = await User.findById(userId);
-    // console.log("User object:", user);
 
     const student = await Student.findById(studentId);
     const room = await Room.findById(roomId);
     // console.log(room.currentbookings);
-    // if (!user) {
-    //   return res.status(400).json({ msg: "Invalid user ID" });
-    // }
+    
     if (!student) {
       return res.status(400).json({ msg: "Invalid student ID" });
     }
@@ -78,7 +72,6 @@ router.post("/", async (req, res) => {
     }
 
     const newBooking = new Booking({
-      //   user: userId,
       student: studentId,
       room: roomId,
       startDate,
@@ -104,10 +97,9 @@ router.post("/", async (req, res) => {
 
 // Update a booking
 router.put("/:id", async (req, res) => {
-  const { userId, studentId, roomId, startDate, endDate, status } = req.body;
+  const { studentId, roomId, startDate, endDate, status } = req.body;
 
   const bookingFields = {
-    user: userId,
     student: studentId,
     room: roomId,
     startDate,
@@ -154,6 +146,29 @@ router.delete("/:id", async (req, res) => {
     await Booking.findByIdAndRemove(req.params.id);
 
     res.json({ msg: "Booking removed" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+router.put("/cancel/:id", async (req, res) => {
+  try {
+    let booking = await Booking.findById(req.params.id);
+
+    if (!booking) {
+      return res.status(404).json({ msg: "Booking not found" });
+    }
+
+    // Remove the booking from the room's currentbookings array
+
+    const updatedBooking = await Booking.findOneAndUpdate(
+      { _id: req.params.id },
+      { status: "cancelled" },
+      { new: true }
+    );
+
+    res.json({ msg: "Booking cancelled", data: updatedBooking });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
