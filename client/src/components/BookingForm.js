@@ -5,6 +5,8 @@ import Select from "react-select";
 import { AiOutlineUser } from "react-icons/ai";
 import { FaBed } from "react-icons/fa";
 import { Card, Col, Row, Button, Modal, Spinner } from "react-bootstrap";
+import { GiCancel } from "react-icons/gi";
+import { RiDeleteBin2Line } from "react-icons/ri";
 
 const BookingForm = ({ userId, students, rooms, onSelect, setRooms }) => {
   const [student, setStudent] = useState(null);
@@ -29,7 +31,30 @@ const BookingForm = ({ userId, students, rooms, onSelect, setRooms }) => {
       })
       .catch((err) => console.log(err));
   }, []);
+  const deleteBooking = async (id) => {
+    try {
+      await axios.delete(`${API_BASE_URL}/api/bookings/${id}`);
+      // setRooms(rooms.filter((room) => room._id !== roomId));
+      setBookings(bookings.filter((booking) => booking._id !== id));
+      setModal("Bookings deleted successfully");
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+  const cancelBooking = async (id) => {
+    try {
+      const { data } = await axios.put(
+        `${API_BASE_URL}/api/bookings/cancel/${id}`
+      );
+      setBookings(
+        bookings.map((booking) => (booking._id === id ? data.data : booking))
+      );
 
+      setModal("Booking Cancelled successfully");
+    } catch (error) {
+      setError(error.message);
+    }
+  };
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -294,8 +319,24 @@ const BookingForm = ({ userId, students, rooms, onSelect, setRooms }) => {
                       booking.status === "cancelled" && "bg-danger text-light"
                     }
                   >
-                    Room No: {booking.room?.roomNumber}{" "}
-                    {booking.status === "cancelled" && "(cancelled)"}
+                    <div className="d-flex flex-row justify-content-between align-items-center">
+                      <p>
+                        Room No: {booking.room?.roomNumber}{" "}
+                        {booking.status === "cancelled" && "(cancelled)"}
+                      </p>
+                      <p>
+                        {booking.status !== "cancelled" && (
+                          <GiCancel
+                            style={{ margin: "0 5px", cursor: "pointer" }}
+                            onClick={() => cancelBooking(booking._id)}
+                          />
+                        )}
+                        <RiDeleteBin2Line
+                          style={{ margin: "0 5px", cursor: "pointer" }}
+                          onClick={() => deleteBooking(booking._id)}
+                        />
+                      </p>
+                    </div>
                   </Card.Header>
                   <Card.Body>
                     <Card.Title>
