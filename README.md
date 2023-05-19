@@ -1,71 +1,58 @@
 # Accommodation-Management-System
 
+This repository contains the code for the Accommodation Management System, a project designed to streamline and automate the management of student accommodations in schools. This project was developed as part of my individual coursework at university.
 
+## Project Overview
 
+The Accommodation Management System is a web-based application designed to assist staff in managing student accommodations. The system automates many of the mundane tasks involved in accommodation management, such as booking rooms, managing student details, and viewing room availability.
+
+The system has been designed with an intuitive, user-friendly interface to ensure ease of use for staff members.
+
+## Technologies Used
+
+- Front-end: React.js
+- Back-end: Node.js, Express.js
+- Database: MongoDB
+- Testing: Jest
 
 ## Installation
 
-npm install --save-dev jest supertest
+frist navigate to the test_server folder and Run the following comman for unit testing.
 
-npm install mongoose-test-utils // to clear database 
-
-npm install axios react-toastify
+`npm install jest`
 
 ## Back End (Server)
 
 Navigate to the server folder and Run the following comman.
 
-<a> $ npm install express </a>
-
-[Link]
-(https://expressjs.com/en/starter/installing.html)
+`$npm install express, nodemon, cors, router, mongoose, dotenv, jsonwebtoken, bcryptjs`
 
 ## Front End (Client)
 
-React.js
+Navigate to the client folder and Run the following comman.
 
-Bootstrap
+`$npm React.js, bootstrap, axios, react-toastify`
 
-```
-$npm i bootstrap@5.2.3
-```
+## Tests
 
-[Link]
-(https://getbootstrap.com)
-
-
-
-
-
-
-## To Run
-
-
-## Output
-
-
-
-Testing
-========
+Tests have been written for the application using Jest. To run the tests, use the command: `npm test`
 
 ### Back End (Server)
 
-Navigate to the server and Run the following command.
+Navigate to the test_server `cd test_server` and Run the following command `npm test`
 
-```
-$npm start 
-```
-
-Navigate to tests open a new terminal and Run the following command.
-
-```
-$npm test
-```
-
-### Front End (Client) 
+### Front End (Client)
 
 Run the following command to test client
 
 ```
 $npm test
 ```
+
+## Author
+
+Marwan Jemal
+
+## Acknowledgements
+
+I would like to thank my superviser, classmates, and the school staff for their support and guidance throughout the duration of this project.
