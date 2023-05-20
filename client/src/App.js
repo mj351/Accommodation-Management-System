@@ -8,6 +8,10 @@ import { StudentManagementPage } from "./pages/StudentManagementPage";
 import { UserManagementPage } from "./pages/UserManagementPage";
 import { NavigationBar } from "./components/Navbar";
 
+function NotFoundPage() {
+  return <h1>404 Not Found</h1>;
+}
+
 function App() {
   return (
     <div className="App">
@@ -25,6 +29,7 @@ function App() {
             element={<StudentManagementPage />}
           />
           <Route path="/user-management" element={<UserManagementPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Router>
     </div>
