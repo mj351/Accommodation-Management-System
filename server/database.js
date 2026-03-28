@@ -1,21 +1,15 @@
 const mongoose = require('mongoose');
+require('dotenv').config();
 
-const Database = (module.exports = () => {
-  const connectionParams = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  };
+const Database = async () => {
   mongoose.set('strictQuery', false);
   try {
-    mongoose.connect(
-      'mongodb+srv://marwan:xxq6ilScsLlMM8cZ@cluster0.avzd0kp.mongodb.net/accommodation?retryWrites=true&w=majority',
-      connectionParams
-    );
+    await mongoose.connect(process.env.MONGO_URI);
     console.log('Successfully connected to MongoDB');
   } catch (error) {
-    console.log(error);
-    console.log('Error connecting to MongoDB');
+    console.error('Error connecting to MongoDB:', error.message);
+    process.exit(1);
   }
-});
+};
 
-Database();
+module.exports = Database;

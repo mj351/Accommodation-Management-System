@@ -38,7 +38,7 @@ router.post("/", async (req, res) => {
     const student = await Student.findById(studentId);
     const room = await Room.findById(roomId);
     // console.log(room.currentbookings);
-    
+
     if (!student) {
       return res.status(400).json({ msg: "Invalid student ID" });
     }
@@ -143,7 +143,7 @@ router.delete("/:id", async (req, res) => {
     );
     await room.save();
 
-    await Booking.findByIdAndRemove(req.params.id);
+    await Booking.findByIdAndDelete(req.params.id);
 
     res.json({ msg: "Booking removed" });
   } catch (err) {

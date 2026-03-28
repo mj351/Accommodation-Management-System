@@ -1,21 +1,21 @@
-const express = require('express');
-const Room = require('../models/Room');
+const express = require("express");
+const Room = require("../models/Room");
 
 const router = express.Router();
 
 // Get all rooms
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const rooms = await Room.find();
     res.json(rooms);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    res.status(500).send("Server Error");
   }
 });
 
 // Add a new room
-router.post('/', async (req, res) => {
+router.post("/", async (req, res) => {
   const { roomNumber, capacity, type, description, currentbookings } = req.body;
 
   try {
@@ -31,12 +31,12 @@ router.post('/', async (req, res) => {
     res.status(201).json(room);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    res.status(500).send("Server Error");
   }
 });
 
 // Update a room
-router.put('/:id', async (req, res) => {
+router.put("/:id", async (req, res) => {
   const { roomNumber, capacity, type, description, currentbookings } = req.body;
 
   const roomFields = { roomNumber, capacity, type, description, currentbookings };
@@ -45,49 +45,38 @@ router.put('/:id', async (req, res) => {
     let room = await Room.findById(req.params.id);
 
     if (!room) {
-      return res.status(404).json({ msg: 'Room not found' });
+      return res.status(404).json({ msg: "Room not found" });
     }
 
-    room = await Room.findByIdAndUpdate(req.params.id, { $set: roomFields }, { new: true });
+    room = await Room.findByIdAndUpdate(
+      req.params.id,
+      { $set: roomFields },
+      { new: true }
+    );
 
     res.json(room);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    res.status(500).send("Server Error");
   }
 });
 
 // Delete a room
-router.delete('/:id', async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     let room = await Room.findById(req.params.id);
 
     if (!room) {
-      return res.status(404).json({ msg: 'Room not found' });
+      return res.status(404).json({ msg: "Room not found" });
     }
 
-    await Room.findByIdAndRemove(req.params.id);
+    await Room.findByIdAndDelete(req.params.id);
 
-    res.json({ msg: 'Room removed' });
+    res.json({ msg: "Room removed" });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    res.status(500).send("Server Error");
   }
 });
-/*/ Get a room by id
-router.get('/:id', async (req, res) => {
-  try {
-    const room = await Room.findById(req.params.id);
-
-    if (!room) {
-      return res.status(404).json({ msg: 'Room not found' });
-    }
-
-    res.json(room);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-});*/
 
 module.exports = router;

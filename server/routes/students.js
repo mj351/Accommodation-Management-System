@@ -40,7 +40,7 @@ router.put('/:id', async (req, res) => {
     const studentFields = { firstName, lastName, studentId };
 
     try {
-        let student = await Student.findById(req.params.id);1
+        let student = await Student.findById(req.params.id);
 
         if (!student) {
             return res.status(404).json({ msg: 'Student not found' });
@@ -64,7 +64,7 @@ router.delete('/:id', async (req, res) => {
             return res.status(404).json({ msg: 'Student not found' });
         }
 
-        await Student.findByIdAndRemove(req.params.id);
+        await Student.findByIdAndDelete(req.params.id);
 
         res.status(200).json({ msg: 'Student removed' });
     } catch (err) {

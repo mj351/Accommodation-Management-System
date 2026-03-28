@@ -57,7 +57,7 @@ const RegisterForm = () => {
             type="text"
             id="role"
             value={role}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setRole(e.target.value)}
             className="auth-input"
             placeholder="role"
           />

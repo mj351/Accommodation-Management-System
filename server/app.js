@@ -1,13 +1,13 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-require('dotenv').config();
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+require("dotenv").config();
 
 // Import the route files
-const userRoutes = require('./routes/users');
-const studentRoutes = require('./routes/students');
-const roomRoutes = require('./routes/rooms');
-const bookingRoutes = require('./routes/bookings');
+const userRoutes = require("./routes/users");
+const studentRoutes = require("./routes/students");
+const roomRoutes = require("./routes/rooms");
+const bookingRoutes = require("./routes/bookings");
 
 const app = express();
 
@@ -15,36 +15,30 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const Database = (module.exports = () => {
-  const connectionParams = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-  mongoose.set('strictQuery', false);
+// Database connection
+const connectDB = async () => {
+  mongoose.set("strictQuery", false);
   try {
-    mongoose.connect(
-      "mongodb+srv://marwan:xxq6ilScsLlMM8cZ@cluster0.avzd0kp.mongodb.net/accommodation?retryWrites=true&w=majority",
-      connectionParams
-    );
+    await mongoose.connect(process.env.MONGO_URI);
     console.log("Successfully connected to MongoDB");
   } catch (error) {
-    console.log(error);
-    console.log("Error connecting to MongoDB");
+    console.error("Error connecting to MongoDB:", error.message);
+    process.exit(1);
   }
-});
+};
 
-Database();
+connectDB();
 
 // Use the routes
-app.use('/api/users', userRoutes);
-app.use('/api/students', studentRoutes);
-app.use('/api/rooms', roomRoutes);
-app.use('/api/bookings', bookingRoutes)
+app.use("/api/users", userRoutes);
+app.use("/api/students", studentRoutes);
+app.use("/api/rooms", roomRoutes);
+app.use("/api/bookings", bookingRoutes);
 
 // Error handling middleware
-app.all('*', (req, res) => {
+app.all("*", (req, res) => {
   res.status(404).json({
-    status: 'fail',
+    status: "fail",
     message: `Can't find ${req.originalUrl} on this server!`,
   });
 });
@@ -54,6 +48,8 @@ const port = process.env.PORT || 3001;
 app.listen(port, () => console.log(`app listening on port ${port}`));
 
 // Docker container exit handler - https://github.com/nodejs/node/issues/4182
-process.on('SIGINT', function () { process.exit() })
+process.on("SIGINT", function () {
+  process.exit();
+});
 
 module.exports = app; // Export the app instance

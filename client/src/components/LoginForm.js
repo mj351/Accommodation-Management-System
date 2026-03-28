@@ -9,11 +9,13 @@ const LoginForm = () => {
   const [_, setCookies] = useCookies(["authToken"]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
     try {
       const response = await axios.post(`${API_BASE_URL}/api/users/login`, {
@@ -25,7 +27,9 @@ const LoginForm = () => {
       window.localStorage.setItem("userID", response.data.userID);
       navigate("/");
     } catch (error) {
-      console.error("Error logging in user:", error);
+      const message =
+        error.response?.data?.message || "Error logging in. Please try again.";
+      setError(message);
     }
   };
 
@@ -33,6 +37,11 @@ const LoginForm = () => {
     <div>
       <form onSubmit={handleSubmit}>
         {/* <h2 className="text-center m-2 my-5">Login</h2> */}
+        {error && (
+          <div className="alert alert-danger" role="alert">
+            {error}
+          </div>
+        )}
         <div className="form-group ">
           <input
             type="text"
