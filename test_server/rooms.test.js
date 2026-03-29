@@ -2,9 +2,15 @@ const request = require('supertest');
 const app = require('../server/app');
 const mongoose = require('mongoose');
 const Database = require('../server/database');
+const { getAdminToken, getStaffToken } = require('./helpers');
+
+let adminToken;
+let staffToken;
 
 beforeAll(async () => {
   await Database();
+  adminToken = await getAdminToken(app);
+  staffToken = await getStaffToken(app);
 });
 
 afterAll(async () => {
@@ -13,68 +19,85 @@ afterAll(async () => {
 
 describe('Rooms API', () => {
   let roomId;
+  const uniqueSuffix = Date.now();
 
   test('POST /api/rooms - create a new room', async () => {
     const newRoom = {
-      roomNumber: '24',
+      roomNumber: `R_${uniqueSuffix}`,
       capacity: 2,
       type: 'Double',
-      description: 'double bed room close to LUK Canterbury',
+      description: 'Double bed room close to campus',
     };
 
-    const response = await request(app)
+    const res = await request(app)
       .post('/api/rooms')
+      .set('x-auth-token', adminToken)
       .send(newRoom);
 
-      console.log(response.body); 
+    expect(res.status).toBe(201);
+    expect(res.body.roomNumber).toBe(newRoom.roomNumber);
+    expect(res.body.capacity).toBe(newRoom.capacity);
+    expect(res.body.type).toBe(newRoom.type);
+    expect(res.body.description).toBe(newRoom.description);
+    roomId = res.body._id;
+  });
 
-    roomId = response.body._id;
+  test('POST /api/rooms - 401 without token', async () => {
+    const res = await request(app)
+      .post('/api/rooms')
+      .send({
+        roomNumber: `NoAuth_${uniqueSuffix}`,
+        capacity: 1,
+        type: 'Single',
+      });
 
-    expect(response.status).toBe(201);
-    expect(response.body.roomNumber).toBe(newRoom.roomNumber);
-    expect(response.body.capacity).toBe(newRoom.capacity);
-    expect(response.body.type).toBe(newRoom.type);
-    expect(response.body.description).toBe(newRoom.description);
+    expect(res.status).toBe(401);
   });
 
   test('GET /api/rooms - get all rooms', async () => {
-    const response = await request(app).get('/api/rooms');
+    const res = await request(app)
+      .get('/api/rooms')
+      .set('x-auth-token', adminToken);
 
-    expect(response.status).toBe(200);
-    expect(Array.isArray(response.body)).toBeTruthy();
-    expect(response.body.length).toBeGreaterThanOrEqual(1);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+    expect(res.body.length).toBeGreaterThanOrEqual(1);
   });
 
-  /*test('GET /api/rooms/:id - get a room by id', async () => {
-    const response = await request(app).get(`/api/rooms/${roomId}`);
-
-    expect(response.status).toBe(200);
-    expect(response.body._id).toBe(roomId);
-  });*/
-
-  test('PUT /api/rooms/:id - update a room by id', async () => {
+  test('PUT /api/rooms/:id - update a room', async () => {
     const updatedRoom = {
-      roomNumber: '24',
-      capacity: 2,
-      type: 'Double',
-      description: '',
+      roomNumber: `R_${uniqueSuffix}`,
+      capacity: 3,
+      type: 'Triple',
+      description: 'Updated description',
     };
 
-    const response = await request(app)
+    const res = await request(app)
       .put(`/api/rooms/${roomId}`)
+      .set('x-auth-token', adminToken)
       .send(updatedRoom);
 
-    expect(response.status).toBe(200);
-    expect(response.body.roomNumber).toBe(updatedRoom.roomNumber);
-    expect(response.body.capacity).toBe(updatedRoom.capacity);
-    expect(response.body.type).toBe(updatedRoom.type);
-    expect(response.body.description).toBe(updatedRoom.description);
+    expect(res.status).toBe(200);
+    expect(res.body.capacity).toBe(3);
+    expect(res.body.type).toBe('Triple');
+    expect(res.body.description).toBe('Updated description');
   });
 
-  test('DELETE /api/rooms/:id - delete a room by id', async () => {
-    const response = await request(app).delete(`/api/rooms/${roomId}`);
+  test('DELETE /api/rooms/:id - 403 when staff tries to delete', async () => {
+    const res = await request(app)
+      .delete(`/api/rooms/${roomId}`)
+      .set('x-auth-token', staffToken);
 
-    expect(response.status).toBe(200);
-    expect(response.body.msg).toBe('Room removed');
+    expect(res.status).toBe(403);
+    expect(res.body.msg).toBe('Access denied: insufficient permissions');
+  });
+
+  test('DELETE /api/rooms/:id - admin can delete a room', async () => {
+    const res = await request(app)
+      .delete(`/api/rooms/${roomId}`)
+      .set('x-auth-token', adminToken);
+
+    expect(res.status).toBe(200);
+    expect(res.body.msg).toBe('Room removed');
   });
 });

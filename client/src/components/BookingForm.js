@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { API_BASE_URL } from "../config";
+import api from "../api/axios";
+import { toast } from "react-toastify";
 import Select from "react-select";
 import { AiOutlineUser } from "react-icons/ai";
 import { FaBed } from "react-icons/fa";
@@ -16,65 +16,61 @@ const BookingForm = ({ userId, students, rooms, onSelect, setRooms }) => {
   const [error, setError] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [modal, setModal] = useState(null);
-
-  // // console.log(startDate);
-  // // console.log(endDate);
 
   useEffect(() => {
-    axios
-      .get(`${API_BASE_URL}/api/bookings`)
+    api
+      .get("/api/bookings")
       .then((response) => {
-        // // console.log(response.data);
         setLoading(false);
         setBookings(response.data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
   }, []);
+
   const deleteBooking = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this booking?")) return;
     try {
-      await axios.delete(`${API_BASE_URL}/api/bookings/${id}`);
-      // setRooms(rooms.filter((room) => room._id !== roomId));
+      await api.delete(`/api/bookings/${id}`);
       setBookings(bookings.filter((booking) => booking._id !== id));
-      setModal("Bookings deleted successfully");
+      toast.success("Booking deleted successfully");
     } catch (error) {
-      setError(error.message);
+      toast.error(error.response?.data?.msg || "Failed to delete booking");
     }
   };
+
   const cancelBooking = async (id) => {
+    if (!window.confirm("Are you sure you want to cancel this booking?")) return;
     try {
-      const { data } = await axios.put(
-        `${API_BASE_URL}/api/bookings/cancel/${id}`
-      );
+      const { data } = await api.put(`/api/bookings/cancel/${id}`);
       setBookings(
         bookings.map((booking) => (booking._id === id ? data.data : booking))
       );
-
-      setModal("Booking Cancelled successfully");
+      toast.success("Booking cancelled successfully");
     } catch (error) {
-      setError(error.message);
+      toast.error(error.response?.data?.msg || "Failed to cancel booking");
     }
   };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
       setLoading(true);
-      // // console.log(student.value, room.value, startDate, endDate);
-      const response = await axios.post(`${API_BASE_URL}/api/bookings`, {
-        // userId,
+      const response = await api.post("/api/bookings", {
         studentId: student.value,
         roomId: room.value,
         startDate,
         endDate,
       });
-      // // console.log("Booking created:", response.data);
       setBookings([response.data, ...bookings]);
       setLoading(false);
-      setModal("Booking created successfully");
+      toast.success("Booking created successfully");
     } catch (error) {
-      console.error("Error creating booking:", error.response.data.msg);
-      setError(error.response.data.msg);
+      console.error("Error creating booking:", error.response?.data?.msg);
+      setError(error.response?.data?.msg || "Error creating booking");
       setLoading(false);
     }
   };
@@ -97,8 +93,7 @@ const BookingForm = ({ userId, students, rooms, onSelect, setRooms }) => {
 
   useEffect(() => {
     handleSelect();
-  }, [student, room]);
-  // console.log(bookings);
+  }, [student, room]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleStartDateChange = (event) => {
     const selectedStartDate = new Date(event.target.value);
@@ -127,9 +122,6 @@ const BookingForm = ({ userId, students, rooms, onSelect, setRooms }) => {
 
   const handleClose = () => {
     setError(null);
-  };
-  const handleCloseModal = () => {
-    setModal(null);
   };
 
   if (loading) {
@@ -264,21 +256,6 @@ const BookingForm = ({ userId, students, rooms, onSelect, setRooms }) => {
                   </Modal.Footer>
                 </Modal>
 
-                <Modal
-                  show={!!modal}
-                  onHide={handleCloseModal}
-                  variant="danger"
-                >
-                  <Modal.Header closeButton>
-                    <Modal.Title>Success</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>{modal}</Modal.Body>
-                  <Modal.Footer>
-                    <Button variant="success" onClick={handleCloseModal}>
-                      Close
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
                 <button
                   type="submit"
                   className="d-block mx-auto btn-booking"
@@ -293,7 +270,6 @@ const BookingForm = ({ userId, students, rooms, onSelect, setRooms }) => {
         <Col lg={6} sm={12}>
           <Card
             border="secondary"
-            // style={{ height: "460px", overflow: "auto" }}
             className="shadow-bottom-right"
           >
             <Card.Header className="h3">Bookings</Card.Header>

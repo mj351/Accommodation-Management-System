@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { API_BASE_URL } from "../config";
+import api from "../api/axios";
+import { toast } from "react-toastify";
 import Select from "react-select";
-import { Button, Card, Col, Modal, Row, Spinner } from "react-bootstrap";
+import { Card, Col, Row, Spinner } from "react-bootstrap";
 import UserList from "./UserList";
 import { useEffect } from "react";
 
@@ -10,20 +10,20 @@ const AddUserForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
-  const [modal, setModal] = useState(null);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/users`);
+      const response = await api.get("/api/users");
       setUsers(response.data);
-      // // console.log(response);
       setLoading(false);
-      // console.log(response.data);
     } catch (error) {
       console.error("Error fetching users:", error);
+      setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -44,12 +44,12 @@ const AddUserForm = () => {
 
     setLoading(true);
     try {
-      await axios.post(`${API_BASE_URL}/api/users/register`, {
+      await api.post("/api/users/register", {
         username,
         password,
         role: role.value,
       });
-      setModal("Room added successfully");
+      toast.success("User added successfully");
       setUsername("");
       setPassword("");
       setRole("");
@@ -58,12 +58,10 @@ const AddUserForm = () => {
     } catch (error) {
       console.error("Error adding user:", error.response);
       setLoading(false);
-      setModal("Error adding user");
+      toast.error("Error adding user");
     }
   };
-  const handleClose = () => {
-    setModal(null);
-  };
+
   return (
     <>
       <Row>
@@ -115,7 +113,6 @@ const AddUserForm = () => {
               <div className="form-group">
                 <Select
                   id="userId"
-                  // className="form-control"
                   value={role}
                   onChange={setRole}
                   options={ROLE}
@@ -158,17 +155,6 @@ const AddUserForm = () => {
                 Add User
               </button>
             </form>
-            <Modal show={!!modal} onHide={handleClose} variant="secondary">
-              <Modal.Header closeButton>
-                <Modal.Title>Message</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>{modal}</Modal.Body>
-              <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
-                  Close
-                </Button>
-              </Modal.Footer>
-            </Modal>
           </div>
         </Col>
       </Row>

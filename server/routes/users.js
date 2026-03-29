@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const { check, validationResult } = require("express-validator");
 
 const User = require("../models/User");
+const auth = require("../middleware/auth");
+const authorize = require("../middleware/authorize");
 
 const router = express.Router();
 
@@ -64,8 +66,61 @@ router.post(
   }
 );
 
+// Login a user
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(400).json({ message: "Login Failed" });
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(400).json({ message: "Username or Password Is Incorrect!" });
+    }
+
+    const payload = {
+      user: {
+        id: user._id,
+      },
+    };
+
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" },
+      (err, token) => {
+        if (err) throw err;
+        res.json({ token, userID: user._id, role: user.role });
+      }
+    );
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+// Get current user (must be BEFORE /:id)
+router.get("/me", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+// Update a user
 router.put(
   "/:id",
+  auth,
   [
     check("username", "Username is required").notEmpty(),
     check("password", "Password must be at least 6 characters").isLength({
@@ -103,26 +158,8 @@ router.put(
   }
 );
 
-router.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-
-  const user = await User.findOne({ username });
-
-  if (!user) {
-    return res.status(400).json({ message: "Login Faild" });
-  }
-  const isPasswordVaild = await bcrypt.compare(password, user.password);
-
-  if (!isPasswordVaild) {
-    return res.status(400).json({ message: "Username or Password Is Incorrect!" });
-  }
-
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET); // Use JWT_SECRET from environment variables
-  res.json({ token, userID: user._id });
-});
-
-// Get all users
-router.get("/", async (req, res) => {
+// Get all users (admin only)
+router.get("/", auth, authorize(["admin"]), async (req, res) => {
   try {
     const users = await User.find();
     res.status(200).json(users);
@@ -132,7 +169,7 @@ router.get("/", async (req, res) => {
 });
 
 // Get user by ID
-router.get("/:id", async (req, res) => {
+router.get("/:id", auth, async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
 
@@ -146,8 +183,8 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Delete a user
-router.delete("/:id", async (req, res) => {
+// Delete a user (admin only)
+router.delete("/:id", auth, authorize(["admin"]), async (req, res) => {
   try {
     let user = await User.findById(req.params.id);
 

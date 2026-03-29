@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { API_BASE_URL } from "../config";
+import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
-// import {zxcvbn} form "zxcvbn"
+import { useAuth } from "../context/AuthContext";
+import { toast } from "react-toastify";
 
 const LoginForm = () => {
-  const [_, setCookies] = useCookies(["authToken"]);
+  const { login } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -18,14 +17,14 @@ const LoginForm = () => {
     setError("");
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/users/login`, {
+      const response = await api.post("/api/users/login", {
         username,
         password,
       });
 
-      setCookies("authToken", response.data.token);
-      window.localStorage.setItem("userID", response.data.userID);
-      navigate("/");
+      login(response.data.token, response.data.userID, response.data.role);
+      toast.success("Logged in successfully");
+      navigate("/booking-management");
     } catch (error) {
       const message =
         error.response?.data?.message || "Error logging in. Please try again.";
@@ -36,7 +35,6 @@ const LoginForm = () => {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        {/* <h2 className="text-center m-2 my-5">Login</h2> */}
         {error && (
           <div className="alert alert-danger" role="alert">
             {error}

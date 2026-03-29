@@ -1,36 +1,35 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { API_BASE_URL } from "../config";
+import api from "../api/axios";
+import { toast } from "react-toastify";
 
 const RegisterForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState(""); // Add role state
+  const [role, setRole] = useState("staff");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await axios.post(`${API_BASE_URL}/api/users/register`, {
+      await api.post("/api/users/register", {
         username,
         password,
         role,
       });
 
-      alert("User registered successfully");
-      setUsername(""); // Clear username field
-      setPassword(""); // Clear password field
-      setRole(""); // Clear role field
+      toast.success("User registered successfully");
+      setUsername("");
+      setPassword("");
+      setRole("staff");
     } catch (error) {
       console.error("Error registering user:", error);
-      alert("Error registering user");
+      toast.error(error.response?.data?.msg || "Error registering user");
     }
   };
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        {/* <h2>Register</h2> */}
         <div className="form-group">
           <input
             type="text"
@@ -39,6 +38,7 @@ const RegisterForm = () => {
             onChange={(e) => setUsername(e.target.value)}
             className="auth-input"
             placeholder="username"
+            required
           />
         </div>
         <div className="form-group">
@@ -53,14 +53,15 @@ const RegisterForm = () => {
           />
         </div>
         <div className="form-group">
-          <input
-            type="text"
+          <select
             id="role"
             value={role}
             onChange={(e) => setRole(e.target.value)}
             className="auth-input"
-            placeholder="role"
-          />
+          >
+            <option value="staff">Staff</option>
+            <option value="admin">Admin</option>
+          </select>
         </div>
         <button type="submit" className="d-block mx-auto btn btn-secondary">
           Register

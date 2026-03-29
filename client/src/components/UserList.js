@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { API_BASE_URL } from "../config";
+import React, { useState } from "react";
+import api from "../api/axios";
+import { toast } from "react-toastify";
 import { Modal, Table, Button } from "react-bootstrap";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import { RiDeleteBin2Line } from "react-icons/ri";
@@ -10,57 +10,47 @@ const UserList = ({ users, ROLE, setUsers }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
-  const [modal, setModal] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [userId, setUserId] = useState("");
 
-  const handleClose = () => {
-    setModal(null);
-  };
   const handleShowEditModal = (user) => {
     setUserId(user._id);
-    // console.log(user);
     setUsername(user.username);
-
     setShowEditModal(true);
   };
+
   const handleUpdate = async (event) => {
     event.preventDefault();
     handleCloseEditModal();
 
     try {
-      // console.log(role);
       if (!password || !role.value) {
-        setModal("username, password, and role are required");
+        toast.error("Username, password, and role are required");
         return;
       }
-      const updatedRoom = { username, password, role: role.value };
-      // // console.log({ updatedRoom });
-      const { data } = await axios.put(
-        `${API_BASE_URL}/api/users/${userId}`,
-        updatedRoom
-      );
+      const updatedUser = { username, password, role: role.value };
+      const { data } = await api.put(`/api/users/${userId}`, updatedUser);
       setUsers(users.map((user) => (user._id === userId ? data : user)));
-      // toast.success("Room updated successfully");
       setUserId(null);
-      setModal("User updated successfully");
+      toast.success("User updated successfully");
     } catch (error) {
-      // console.log(error);
-      setModal("Failed to update user");
+      toast.error("Failed to update user");
     }
   };
 
   const handleDelete = async (userId) => {
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
-      await axios.delete(`${API_BASE_URL}/api/users/${userId}`);
+      await api.delete(`/api/users/${userId}`);
       setUsers(users.filter((user) => user._id !== userId));
-      // toast.success("Room deleted successfully");
-      setModal("User deleted successfully");
+      toast.success("User deleted successfully");
     } catch (error) {
-      setModal("Failed to delete user");
+      toast.error(error.response?.data?.msg || "Failed to delete user");
     }
   };
+
   const handleCloseEditModal = () => setShowEditModal(false);
+
   return (
     <>
       <Table bordered={false} className="bg-transparent">
@@ -92,20 +82,9 @@ const UserList = ({ users, ROLE, setUsers }) => {
           </tbody>
         ))}
       </Table>
-      <Modal show={!!modal} onHide={handleClose} variant="secondary">
-        <Modal.Header closeButton>
-          <Modal.Title>Message</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{modal}</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
       <Modal show={showEditModal} onHide={handleCloseEditModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title>Edit User</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form>
@@ -133,7 +112,6 @@ const UserList = ({ users, ROLE, setUsers }) => {
             <div className="form-group">
               <Select
                 id="userId"
-                // className="form-control"
                 value={role}
                 onChange={setRole}
                 options={ROLE}

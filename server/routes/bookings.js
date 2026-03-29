@@ -1,20 +1,18 @@
 const express = require("express");
 const Booking = require("../models/Booking");
-const User = require("../models/User");
 const Room = require("../models/Room");
 const Student = require("../models/Student");
-const { route } = require("express/lib/application");
+const auth = require("../middleware/auth");
 
 const router = express.Router();
 
 // Get all bookings
-router.get("/", async (req, res) => {
+router.get("/", auth, async (req, res) => {
   try {
     const bookings = await Booking.find()
       .populate("student")
       .populate("room")
       .sort({ createdAt: -1 });
-    //   .populate("user")
     res.json(bookings);
   } catch (err) {
     console.error(err.message);
@@ -23,7 +21,7 @@ router.get("/", async (req, res) => {
 });
 
 // Add a new booking
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   const {
     studentId,
     roomId,
@@ -31,13 +29,9 @@ router.post("/", async (req, res) => {
     endDate,
   } = req.body;
 
-  //   console.log("Request body:", req.body);
-
   try {
-
     const student = await Student.findById(studentId);
     const room = await Room.findById(roomId);
-    // console.log(room.currentbookings);
 
     if (!student) {
       return res.status(400).json({ msg: "Invalid student ID" });
@@ -50,13 +44,7 @@ router.post("/", async (req, res) => {
       room: roomId,
       status: { $ne: "cancelled" },
     });
-    console.log(checkBookings.length);
-    // console.log(
-    //   !(
-    //     new Date(checkBookings[0].endDate).getTime() <
-    //     new Date(startDate).getTime()
-    //   )
-    // );
+
     checkBookings = checkBookings.filter(
       (booking) =>
         !(new Date(booking.endDate).getTime() < new Date(startDate).getTime())
@@ -66,7 +54,7 @@ router.post("/", async (req, res) => {
       (booking) =>
         !(new Date(booking.startDate).getTime() > new Date(endDate).getTime())
     );
-    console.log("checkBookings", checkBookings.length, room.capacity);
+
     if (checkBookings.length >= room.capacity) {
       return res.status(400).json({ msg: "Room is full" });
     }
@@ -96,7 +84,7 @@ router.post("/", async (req, res) => {
 });
 
 // Update a booking
-router.put("/:id", async (req, res) => {
+router.put("/:id", auth, async (req, res) => {
   const { studentId, roomId, startDate, endDate, status } = req.body;
 
   const bookingFields = {
@@ -128,7 +116,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // Delete a booking
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", auth, async (req, res) => {
   try {
     let booking = await Booking.findById(req.params.id);
 
@@ -152,15 +140,14 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-router.put("/cancel/:id", async (req, res) => {
+// Cancel a booking
+router.put("/cancel/:id", auth, async (req, res) => {
   try {
     let booking = await Booking.findById(req.params.id);
 
     if (!booking) {
       return res.status(404).json({ msg: "Booking not found" });
     }
-
-    // Remove the booking from the room's currentbookings array
 
     const updatedBooking = await Booking.findOneAndUpdate(
       { _id: req.params.id },

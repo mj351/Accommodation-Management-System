@@ -1,47 +1,46 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { API_BASE_URL } from "../config";
-import { Card, Col, Row, Spinner, Modal, Button } from "react-bootstrap";
+import api from "../api/axios";
+import { toast } from "react-toastify";
+import { Card, Col, Row, Spinner } from "react-bootstrap";
 import RoomList from "./RoomList";
 import { useEffect } from "react";
 
 const AddRoomForm = () => {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [modal, setModal] = useState(null);
   const [roomNumber, setRoomNumber] = useState("");
   const [capacity, setCapacity] = useState("");
   const [type, setType] = useState("");
   const [description, setDescription] = useState("");
   const [currentbookings, setCurrentBookings] = useState([]);
+
   const fetchRooms = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/rooms`);
+      const response = await api.get("/api/rooms");
       setRooms(response.data);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching rooms:", error);
+      setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchRooms();
   }, []);
-  const handleClose = () => {
-    setModal(null);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data } = await axios.post(`${API_BASE_URL}/api/rooms`, {
+      const { data } = await api.post("/api/rooms", {
         roomNumber,
         capacity,
         type,
         description,
         currentbookings,
       });
-      setModal("Room added successfully");
+      toast.success("Room added successfully");
       setRooms([...rooms, data]);
       setRoomNumber("");
       setCapacity("");
@@ -52,7 +51,7 @@ const AddRoomForm = () => {
     } catch (error) {
       console.error("Error adding room:", error);
       setLoading(false);
-      alert("Error adding room");
+      toast.error("Error adding room");
     }
   };
 
@@ -128,17 +127,6 @@ const AddRoomForm = () => {
                 Add Room
               </button>
             </form>
-            <Modal show={!!modal} onHide={handleClose} variant="secondary">
-              <Modal.Header closeButton>
-                <Modal.Title>Message</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>{modal}</Modal.Body>
-              <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
-                  Close
-                </Button>
-              </Modal.Footer>
-            </Modal>
           </div>
         </Col>
       </Row>

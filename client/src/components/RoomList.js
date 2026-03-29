@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { API_BASE_URL } from "../config";
+import React, { useState } from "react";
+import api from "../api/axios";
 import { toast } from "react-toastify";
-import { Table, Modal, Button, Form } from "react-bootstrap";
+import { Table, Modal, Button } from "react-bootstrap";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import { RiDeleteBin2Line } from "react-icons/ri";
 
@@ -10,7 +9,6 @@ const RoomList = ({ rooms, setRooms }) => {
   const [roomNumber, setRoomNumber] = useState("");
   const [capacity, setCapacity] = useState("");
   const [type, setType] = useState("");
-  const [modal, setModal] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [roomId, setRoomId] = useState(false);
   const [description, setDescription] = useState("");
@@ -18,7 +16,6 @@ const RoomList = ({ rooms, setRooms }) => {
   const handleCloseEditModal = () => setShowEditModal(false);
   const handleShowEditModal = (room) => {
     setRoomId(room._id);
-    // console.log(room);
     setRoomNumber(room.roomNumber);
     setCapacity(room.capacity);
     setType(room.type);
@@ -32,36 +29,26 @@ const RoomList = ({ rooms, setRooms }) => {
 
     try {
       const updatedRoom = { roomNumber, capacity, type, description };
-      // // console.log({ updatedRoom });
-      const { data } = await axios.put(
-        `${API_BASE_URL}/api/rooms/${roomId}`,
-        updatedRoom
-      );
+      const { data } = await api.put(`/api/rooms/${roomId}`, updatedRoom);
       setRooms(rooms.map((room) => (room._id === roomId ? data : room)));
-      // toast.success("Room updated successfully");
       setRoomId(null);
-      setModal("Room updated successfully");
+      toast.success("Room updated successfully");
     } catch (error) {
-      setModal("Failed to update room");
-      // toast.error("Failed to update room");
+      toast.error("Failed to update room");
     }
   };
 
   const handleDelete = async (roomId) => {
+    if (!window.confirm("Are you sure you want to delete this room?")) return;
     try {
-      await axios.delete(`${API_BASE_URL}/api/rooms/${roomId}`);
+      await api.delete(`/api/rooms/${roomId}`);
       setRooms(rooms.filter((room) => room._id !== roomId));
-      // toast.success("Room deleted successfully");
-      setModal("Room deleted successfully");
+      toast.success("Room deleted successfully");
     } catch (error) {
-      // toast.error("Failed to delete room");
-      setModal("Failed to delete room");
+      toast.error(error.response?.data?.msg || "Failed to delete room");
     }
   };
-  const handleClose = () => {
-    setModal(null);
-  };
-  // console.log(rooms);
+
   return (
     <>
       <Table bordered={false} className="bg-transparent">
@@ -95,20 +82,9 @@ const RoomList = ({ rooms, setRooms }) => {
           </tbody>
         ))}
       </Table>
-      <Modal show={!!modal} onHide={handleClose} variant="secondary">
-        <Modal.Header closeButton>
-          <Modal.Title>Message</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{modal}</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
       <Modal show={showEditModal} onHide={handleCloseEditModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title>Edit Room</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form>

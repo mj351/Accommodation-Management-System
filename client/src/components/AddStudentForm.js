@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { API_BASE_URL } from "../config";
-import { Button, Card, Col, Modal, Row, Spinner } from "react-bootstrap";
+import api from "../api/axios";
+import { toast } from "react-toastify";
+import { Card, Col, Row, Spinner } from "react-bootstrap";
 import StudentList from "./StudentList";
 import { useEffect } from "react";
 
@@ -9,49 +9,42 @@ const AddStudentForm = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [studentId, setStudentId] = useState("");
-  const [modal, setModal] = useState(null);
   const [loading, setLoading] = useState(true);
-
   const [students, setStudents] = useState([]);
 
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/students`);
+        const response = await api.get("/api/students");
         setStudents(response.data);
         setLoading(false);
-
-        // // console.log(response);
-        // // console.log(response.data);
       } catch (error) {
         console.error("Error fetching students:", error);
+        setLoading(false);
       }
     };
 
     fetchStudents();
   }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const { data } = await axios.post(`${API_BASE_URL}/api/students`, {
+      const { data } = await api.post("/api/students", {
         firstName,
         lastName,
         studentId,
       });
-      // console.log(data);
-      setModal("Student added successfully");
+      toast.success("Student added successfully");
       setFirstName("");
       setLastName("");
       setStudentId("");
       setStudents([...students, data]);
     } catch (error) {
       console.error("Error adding student:", error);
-      setModal("Error adding student");
+      toast.error("Error adding student");
     }
-  };
-  const handleClose = () => {
-    setModal(null);
   };
 
   return (
@@ -118,17 +111,6 @@ const AddStudentForm = () => {
                 Add Student
               </button>
             </form>
-            <Modal show={!!modal} onHide={handleClose} variant="secondary">
-              <Modal.Header closeButton>
-                <Modal.Title>Message</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>{modal}</Modal.Body>
-              <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
-                  Close
-                </Button>
-              </Modal.Footer>
-            </Modal>
           </div>
         </Col>
       </Row>

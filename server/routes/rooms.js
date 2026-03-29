@@ -1,10 +1,12 @@
 const express = require("express");
 const Room = require("../models/Room");
+const auth = require("../middleware/auth");
+const authorize = require("../middleware/authorize");
 
 const router = express.Router();
 
 // Get all rooms
-router.get("/", async (req, res) => {
+router.get("/", auth, async (req, res) => {
   try {
     const rooms = await Room.find();
     res.json(rooms);
@@ -15,7 +17,7 @@ router.get("/", async (req, res) => {
 });
 
 // Add a new room
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   const { roomNumber, capacity, type, description, currentbookings } = req.body;
 
   try {
@@ -36,7 +38,7 @@ router.post("/", async (req, res) => {
 });
 
 // Update a room
-router.put("/:id", async (req, res) => {
+router.put("/:id", auth, async (req, res) => {
   const { roomNumber, capacity, type, description, currentbookings } = req.body;
 
   const roomFields = { roomNumber, capacity, type, description, currentbookings };
@@ -61,8 +63,8 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// Delete a room
-router.delete("/:id", async (req, res) => {
+// Delete a room (admin only)
+router.delete("/:id", auth, authorize(["admin"]), async (req, res) => {
   try {
     let room = await Room.findById(req.params.id);
 

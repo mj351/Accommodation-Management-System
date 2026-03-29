@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { API_BASE_URL } from "../config";
+import api from "../api/axios";
 import BookingForm from "../components/BookingForm";
 import { Container } from "react-bootstrap";
 
@@ -15,7 +14,7 @@ export const BookingManagementPage = () => {
 
   const fetchStudents = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/students`);
+      const response = await api.get("/api/students");
       setStudents(response.data);
     } catch (error) {
       console.error("Error fetching students:", error);
@@ -24,7 +23,7 @@ export const BookingManagementPage = () => {
 
   const fetchRooms = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/rooms`);
+      const response = await api.get("/api/rooms");
       setRooms(response.data);
     } catch (error) {
       console.error("Error fetching rooms:", error);

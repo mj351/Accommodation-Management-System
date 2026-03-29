@@ -1,46 +1,172 @@
-# Accommodation-Management-System
+# Accommodation Management System
 
-This repository contains the code for the Accommodation Management System (AMS), a project designed to streamline and automate the management of student accommodation in schools. This project was developed as part of my final year individual project at university.
+A full-stack MERN application for managing student housing — rooms, students, bookings, and users with role-based access control.
 
-## Project Overview
+## Features
 
-The AMS is a web-based application, that is designed to assist staff in managing student accommodation. The system automates many of the mundane tasks involved in accommodation management, such as booking rooms, managing student details, and viewing room availability.
+- **Authentication** — JWT-based login and registration with secure password hashing (bcrypt)
+- **Role-Based Access Control** — Admin and Staff roles with protected routes and middleware
+- **Room Management** — Create, update, and delete rooms with capacity tracking
+- **Student Management** — Maintain student records linked to room assignments
+- **Booking System** — Book rooms for students with date-range validation, overlap detection, and cancellation support
+- **User Management** — Admin-only user CRUD operations
+- **Responsive UI** — React Bootstrap interface with toast notifications and protected client-side routing
 
-The system has been designed with an intuitive, user-friendly interface to ensure ease of use for staff members.
+## Tech Stack
 
-## Technologies Used
+| Layer | Technologies |
+|------------|-----------------------------------------------|
+| Frontend | React 18, React Router v6, React Bootstrap, Axios, React Toastify |
+| Backend | Node.js, Express, Mongoose, JWT, bcryptjs |
+| Database | MongoDB Atlas |
+| Testing | Jest, Supertest (backend), React Testing Library (frontend) |
 
-- Front-end: React.js
-- Back-end: Node.js, Express.js
-- Database: MongoDB
-- Testing: Jest
+## Getting Started
 
-## Installation
+### Prerequisites
 
-First navigate to the test_server folder and Run the following comman for unit testing.
+- Node.js (v16+)
+- npm
+- MongoDB Atlas account (or local MongoDB instance)
 
-`npm install jest`
+### Installation
 
-## Back End (Server)
+```bash
+# Clone the repository
+git clone https://github.com/marwanjemal/Accommodation-Management-System.git
+cd Accommodation-Management-System
 
-Navigate to the server folder and Run the following comman.
+# Install server dependencies
+cd server
+npm install
 
-`$npm install express, nodemon, cors, router, mongoose, dotenv, jsonwebtoken, bcryptjs`
+# Install client dependencies
+cd ../client
+npm install
 
-## Front End (Client)
+# Install root test dependencies
+cd ..
+npm install
+```
 
-Navigate to the client folder and Run the following comman.
+### Environment Variables
 
-`$npm React.js, bootstrap, axios, react-toastify`
+**Server** (`server/.env`):
+```
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+```
 
-## Tests
+**Client** (`client/.env`):
+```
+REACT_APP_API_BASE_URL=http://localhost:3001
+```
 
-Tests have been written for the application using Jest. To run the tests, Navigate to the test_server `cd test_server` and Run the following command `npm test`
+### Seed the Database
+
+```bash
+cd server
+npm run seed
+```
+
+This creates a default admin user and sample data for development.
+
+### Run the Application
+
+```bash
+# Start the server (port 3001)
+cd server
+npm run dev
+
+# In a separate terminal — start the client (port 3000)
+cd client
+npm start
+```
+
+## Usage
+
+### Demo Credentials
+
+| Role | Username | Password |
+|-------|----------|------------|
+| Admin | admin | admin123 |
+
+### Admin vs Staff
+
+- **Admin** — Full access: manage rooms, students, bookings, and users
+- **Staff** — Can view and manage rooms, students, and bookings; cannot access user management or delete protected resources
+
+## API Endpoints
+
+| Method | Endpoint | Description | Auth |
+|--------|-------------------------------|-------------------------------|------|
+| POST | `/api/users/register` | Register a new user | No |
+| POST | `/api/users/login` | Login and receive JWT | No |
+| GET | `/api/users/me` | Get current user profile | Yes |
+| GET | `/api/users` | List all users | Admin |
+| GET | `/api/users/:id` | Get user by ID | Yes |
+| PUT | `/api/users/:id` | Update a user | Yes |
+| DELETE | `/api/users/:id` | Delete a user | Admin |
+| GET | `/api/students` | List all students | Yes |
+| POST | `/api/students` | Create a student | Yes |
+| PUT | `/api/students/:id` | Update a student | Yes |
+| DELETE | `/api/students/:id` | Delete a student | Admin |
+| GET | `/api/rooms` | List all rooms | Yes |
+| POST | `/api/rooms` | Create a room | Yes |
+| PUT | `/api/rooms/:id` | Update a room | Yes |
+| DELETE | `/api/rooms/:id` | Delete a room | Admin |
+| GET | `/api/bookings` | List all bookings | Yes |
+| POST | `/api/bookings` | Create a booking | Yes |
+| PUT | `/api/bookings/:id` | Update a booking | Yes |
+| DELETE | `/api/bookings/:id` | Delete a booking | Yes |
+| PUT | `/api/bookings/cancel/:id` | Cancel a booking | Yes |
+
+## Project Structure
+
+```
+Accommodation-Management-System/
+├── client/                     # React frontend
+│   └── src/
+│       ├── api/                # Axios instance with auth interceptor
+│       ├── components/         # Forms, lists, Navbar, ProtectedRoute
+│       ├── context/            # AuthContext (JWT + role state)
+│       ├── pages/              # Route-level page components
+│       └── config.js           # API base URL config
+├── server/                     # Express backend
+│   ├── middleware/             # auth.js (JWT), authorize.js (RBAC)
+│   ├── models/                # Mongoose schemas (User, Student, Room, Booking)
+│   ├── routes/                # REST endpoint handlers
+│   ├── seed.js                # Database seeder
+│   └── app.js                 # Express entry point
+├── test_server/               # Backend integration tests
+│   ├── helpers.js             # Auth token test utilities
+│   ├── users.test.js
+│   ├── students.test.js
+│   ├── rooms.test.js
+│   └── bookings.test.js
+└── package.json               # Root — Jest config and test script
+```
+
+## Testing
+
+### Backend Tests (Jest + Supertest)
+
+```bash
+# From project root
+npm test
+```
+
+Runs integration tests against all API endpoints with authentication.
+
+### Frontend Tests (React Testing Library)
+
+```bash
+cd client
+npx react-scripts test --watchAll=false
+```
+
+Tests cover component rendering, form behavior, and protected route logic.
 
 ## Author
 
-Marwan Jemal
-
-## Acknowledgements
-
-I would like to thank my supervisor, classmates, and the school staff for their support and guidance throughout the duration of this project.
+**Marwan Jemal**

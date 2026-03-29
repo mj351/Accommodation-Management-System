@@ -2,57 +2,93 @@ const request = require('supertest');
 const app = require('../server/app');
 const mongoose = require('mongoose');
 const Database = require('../server/database');
+const { getAdminToken, getStaffToken } = require('./helpers');
+
+let adminToken;
+let staffToken;
 
 beforeAll(async () => {
   await Database();
+  adminToken = await getAdminToken(app);
+  staffToken = await getStaffToken(app);
 });
 
 afterAll(async () => {
   await mongoose.disconnect();
 });
 
-describe('Student API Endpoints', () => {
+describe('Students API', () => {
   let studentId;
+  const uniqueSuffix = Date.now();
 
-  test('Create a new student', async () => {
-    const response = await request(app)
+  test('POST /api/students - create a new student', async () => {
+    const res = await request(app)
       .post('/api/students')
+      .set('x-auth-token', adminToken)
       .send({
         firstName: 'Adam',
         lastName: 'Omer',
-        studentId: 'AO1234',
+        studentId: `AO_${uniqueSuffix}`,
       });
 
-    expect(response.status).toBe(200);
-    expect(response.body.firstName).toBe('Adam');
-    expect(response.body.lastName).toBe('Omer');
-    expect(response.body.studentId).toBe('AO1234');
-    studentId = response.body._id;
+    expect(res.status).toBe(200);
+    expect(res.body.firstName).toBe('Adam');
+    expect(res.body.lastName).toBe('Omer');
+    expect(res.body.studentId).toBe(`AO_${uniqueSuffix}`);
+    studentId = res.body._id;
   });
 
-  test('Get all students', async () => {
-    const response = await request(app).get('/api/students');
-    expect(response.status).toBe(200);
-    expect(Array.isArray(response.body)).toBe(true);
+  test('POST /api/students - 401 without token', async () => {
+    const res = await request(app)
+      .post('/api/students')
+      .send({
+        firstName: 'No',
+        lastName: 'Token',
+        studentId: `NT_${uniqueSuffix}`,
+      });
+
+    expect(res.status).toBe(401);
   });
 
-  test('Update a student', async () => {
-    const response = await request(app)
+  test('GET /api/students - get all students', async () => {
+    const res = await request(app)
+      .get('/api/students')
+      .set('x-auth-token', adminToken);
+
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+    expect(res.body.length).toBeGreaterThanOrEqual(1);
+  });
+
+  test('PUT /api/students/:id - update a student', async () => {
+    const res = await request(app)
       .put(`/api/students/${studentId}`)
+      .set('x-auth-token', adminToken)
       .send({
         firstName: 'Adam',
         lastName: 'Ali',
-        studentId: 'AO1234',
+        studentId: `AO_${uniqueSuffix}`,
       });
 
-    expect(response.status).toBe(200);
-    expect(response.body.firstName).toBe('Adam');
-    expect(response.body.lastName).toBe('Ali');
-    expect(response.body.studentId).toBe('AO1234');
+    expect(res.status).toBe(200);
+    expect(res.body.lastName).toBe('Ali');
   });
 
-  test('Delete a student', async () => {
-    const response = await request(app).delete(`/api/students/${studentId}`);
-    expect(response.status).toBe(200);
+  test('DELETE /api/students/:id - 403 when staff tries to delete', async () => {
+    const res = await request(app)
+      .delete(`/api/students/${studentId}`)
+      .set('x-auth-token', staffToken);
+
+    expect(res.status).toBe(403);
+    expect(res.body.msg).toBe('Access denied: insufficient permissions');
+  });
+
+  test('DELETE /api/students/:id - admin can delete a student', async () => {
+    const res = await request(app)
+      .delete(`/api/students/${studentId}`)
+      .set('x-auth-token', adminToken);
+
+    expect(res.status).toBe(200);
+    expect(res.body.msg).toBe('Student removed');
   });
 });

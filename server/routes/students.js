@@ -1,10 +1,12 @@
 const express = require('express');
 const Student = require('../models/Student');
+const auth = require('../middleware/auth');
+const authorize = require('../middleware/authorize');
 
 const router = express.Router();
 
 // Get all students
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
     try {
         const students = await Student.find().populate('room');
         res.json(students);
@@ -15,7 +17,7 @@ router.get('/', async (req, res) => {
 });
 
 // Add a new student
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
     const { firstName, lastName, studentId } = req.body;
 
     try {
@@ -34,7 +36,7 @@ router.post('/', async (req, res) => {
 });
 
 // Update a student
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
     const { firstName, lastName, studentId } = req.body;
 
     const studentFields = { firstName, lastName, studentId };
@@ -55,8 +57,8 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// Delete a student
-router.delete('/:id', async (req, res) => {
+// Delete a student (admin only)
+router.delete('/:id', auth, authorize(['admin']), async (req, res) => {
     try {
         let student = await Student.findById(req.params.id);
 

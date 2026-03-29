@@ -1,11 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { Navigate } from "react-router-dom";
 import { Button, Container } from "react-bootstrap";
 import LoginForm from "../components/LoginForm";
 import RegisterForm from "../components/RegisterForm";
+import { useAuth } from "../context/AuthContext";
 
 export const HomePage = () => {
+  const { isAuthenticated, loading } = useAuth();
   const [showLogin, setShowLogin] = useState(true);
   const [showRegister, setShowRegister] = useState(false);
+
+  if (!loading && isAuthenticated) {
+    return <Navigate to="/booking-management" replace />;
+  }
 
   return (
     <Container>

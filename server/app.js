@@ -43,9 +43,12 @@ app.all("*", (req, res) => {
   });
 });
 
-// Start the Serve - https://stackoverflow.com/questions/4840879/nodejs-how-to-get-the-servers-port
+// Start the Server only when run directly (not when imported by tests)
+// https://stackoverflow.com/questions/4840879/nodejs-how-to-get-the-servers-port
 const port = process.env.PORT || 3001;
-app.listen(port, () => console.log(`app listening on port ${port}`));
+if (require.main === module) {
+  app.listen(port, () => console.log(`app listening on port ${port}`));
+}
 
 // Docker container exit handler - https://github.com/nodejs/node/issues/4182
 process.on("SIGINT", function () {
